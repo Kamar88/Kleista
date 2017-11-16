@@ -1,0 +1,127 @@
+header, section {
+    display: block;
+}
+
+body {
+    font-family: 'Droid Serif';
+}
+
+h1, h2 {
+    text-align: center;
+    font-weight: normal;
+}
+
+#features {
+    margin: auto;
+    width: 460px;
+    font-size: 0.9em;
+}
+
+.connected, .sortable, .exclude, .handles {
+    margin: auto;
+    padding: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.sortable.grid {
+    overflow: hidden;
+}
+
+.connected li, .sortable li, .exclude li, .handles li {
+    list-style: none;
+    border: 1px solid #CCC;
+    background: #179c81;
+    /* font-family: "Tahoma"; */
+    color: #ffffff;
+    margin: 3px;
+    padding: 3px;
+    height: 30px;
+    text-align: center;
+    width: 200px;
+}
+
+
+.handles span {
+    cursor: move;
+}
+
+li.disabled {
+    opacity: 0.5;
+}
+
+.sortable.grid li {
+    line-height: 80px;
+    float: left;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+}
+
+li.highlight {
+    background: #179c81;
+}
+
+#connected {
+    width: 440px;
+    overflow: hidden;
+    margin: auto;
+}
+
+.connected {
+    float: left;
+}
+
+.connected.no2 {
+    float: right;
+}
+.connected.no3 {
+    float: left;
+}
+
+li.sortable-placeholder {
+    border: 1px dashed #CCC;
+    background: none;
+}
+div#mc ul.list-group:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+
+div#mc .list-group-item {
+    float: left;
+    width: 200px;
+    margin: 2px;
+}
+
+div#categorized ul li{
+    background-color: #1f82c0;
+}
+
+span#OneItem {
+    display: table;
+    width: 100%;
+}
+
+.entry:not(:first-of-type)
+{
+    margin-top: 10px;
+}
+
+.glyphicon
+{
+    font-size: 12px;
+}
+
+.circle{
+    height: 40px !important;
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #1f82c0;
+    color: white;
+}
