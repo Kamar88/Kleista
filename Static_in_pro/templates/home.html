@@ -76,7 +76,7 @@
 <script src="{% static 'js/Main.js' %}"></script>
 <script src="{% static 'js/interact.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
-<script src="{% static 'js/jquery.sortable.js' %}"></script>
+{% comment %}<script src="{% static 'js/jquery.sortable.js' %}"></script>
 <script>
     $(function () {
         $('.sortable').sortable();
@@ -90,7 +90,7 @@
             items: ':not(.disabled)'
         });
     });
-</script>
+</script>{% endcomment %}
 
 </body>
 

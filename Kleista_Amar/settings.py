@@ -26,7 +26,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -71,16 +70,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Kleista_Amar.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'KleiStaDB',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '3306'
 }
+}
+
 
 
 # Internationalization
@@ -96,7 +99,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -105,9 +107,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "Static_in_pro", "Static_root")
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "Static_in_pro","our_static"),
-    #'/var/www/static/',
+    os.path.join(BASE_DIR, "Static_in_pro", "our_static"),
+    # '/var/www/static/',
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "Static_in_pro","Media_root")
+MEDIA_ROOT = os.path.join(BASE_DIR, "Static_in_pro", "Media_root")

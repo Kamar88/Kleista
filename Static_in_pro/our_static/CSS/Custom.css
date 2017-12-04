@@ -1,3 +1,5 @@
+{% load static %}
+
 header, section {
     display: block;
 }
@@ -31,6 +33,8 @@ h1, h2 {
 .sortable.grid {
     overflow: hidden;
 }
+
+
 
 .connected li, .sortable li, .exclude li, .handles li {
     list-style: none;
@@ -66,10 +70,23 @@ li.highlight {
     background: #179c81;
 }
 
+
 #connected {
     width: 440px;
     overflow: hidden;
     margin: auto;
+}
+
+.Lheights
+{
+    height:40px;
+    width: 220px;
+}
+
+.Lheight
+{
+    height:100%;
+    width: 220px;
 }
 
 .connected {
@@ -125,3 +142,4 @@ span#OneItem {
    background-color: #1f82c0;
     color: white;
 }
+

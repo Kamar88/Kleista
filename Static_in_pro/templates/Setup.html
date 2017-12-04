@@ -2,129 +2,126 @@
 
 {% block title %}
     <title>Setup</title>
-    {% endblock %}
+{% endblock %}
 {% block content %}
-<div class="container">
+    <div class="container">
+        <!-- Heading Row -->
+        <div class="row my-4 card" style="padding: 40px">
+            <div class="col-lg-12">
+                <h3>Select Data Table: </h3>
+                <form method="POST" enctype="multipart/form-data">
+                    <!-- COMPONENT START -->
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <div class="input-group input-file" name="DataTableF">
 
-    <!-- Heading Row -->
-    <div class="row my-4 card" style="padding: 40px">
-        <div class="col-lg-12">
-            <h3>Select Data Table: </h3>
-            <form method="POST" action="#" enctype="multipart/form-data">
-                <!-- COMPONENT START -->
-                <div class="form-group">
-                    <div class="input-group input-file" name="DataTable">
-                        <input type="text" class="form-control" placeholder='Choose a file...'/>
-                        <span class="input-group-btn">
+                            <input type="text" class="form-control"
+                                   accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                   placeholder='Choose a file...' required/>
+                            <span class="input-group-btn">
         		<button class="btn btn-default btn-choose" type="button">Choose</button>
     		</span>
 
 
+                        </div>
                     </div>
-                </div>
-                <!-- COMPONENT END -->
-                <div class="form-group float-right">
-                    <div class="col-lg-pull-6">
-                        <button type="reset" class="btn btn-primary  draggable" style="background-color:#179c81;">
-                            Reset
-                        </button>
+                    <!-- COMPONENT END -->
+                    <div class="form-group float-right">
+                        <div class="col-lg-pull-6">
+                            <button type="reset" class="btn btn-primary  draggable" style="background-color:#179c81;">
+                                Reset
+                            </button>
 
-                        <button type="submit" class="btn btn-primary" style="background-color:#179c81;" disabled>
-                            Submit
-                        </button>
+                            <button type="submit" name="DataTable" class="btn btn-primary"
+                                    style="background-color:#179c81;">
+                                Submit
+                            </button>
+                        </div>
                     </div>
+                </form>
+
+                {% if uploaded_file_url %}
+                    <p class="text-danger">{{ uploaded_file_url }}</p>
+                {% endif %}
+            </div>
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
+        <!-- Content Row -->
+
+        <input id="copyInput" type="text" style="display: none;"/>
+
+        <div class="row">
+            <div id='mc' class="col-lg-12 mb-4 card" style="padding: 40px">
+                <h4>Categorize Data:</h4>
+                <ul class="connected list no3 list-inline" id="ML">
+                    {% for col in  ColList %}
+
+                        <li class="list-group-item" id="{{ col }}" ondragstart="drag(this,event)"
+                            value="{{ forloop.counter0 }}" draggable="true">{{ col }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">                <!-- COMPONENT START -->
+
+                <div id="categorized" class="col-md-4 mb-4 card">
+                     <input Name="FileName" type="text" style="display: none;" value="{{ File_Name }}"/>
+                    <h5>Product Name</h5>
+
+                    <ul class="connected list Lheights" Name="ProductName" ondrop="drop(this,event)"
+                        ondragover="allowDrop(event)">
+                    </ul>
+
+                    <span id="OneItem">LSL</span>
+
+                    <ul class="connected list Lheights" Name="LSL" ondrop="drop(this,event)"
+                        ondragover="allowDrop(event)">
+                    </ul>
+                    <span id="OneItem">USL</span>
+                    <ul class="connected list Lheights" Name="USL" ondrop="drop(this,event)"
+                        ondragover="allowDrop(event)">
+                    </ul>
+                    <span id="OneItem">Date</span>
+                    <ul class="connected list Lheights" Name="Date" ondrop="drop(this,event)"
+                        ondragover="allowDrop(event)">
+                    </ul>
+
                 </div>
-            </form>
-        </div>
-        <!-- /.col-md-4 -->
-    </div>
-    <!-- /.row -->
-    <!-- Content Row -->
+                <div id="categorized" class="col-md-4 mb-4 card">
 
+                    <h5>Influencing Factors</h5>
+                    <ul class="connected list Lheight" id="InflFactor" Name="InflFactor" ondrop="drop(this,event)"
+                        ondragover="allowDrop(event)">
+                    </ul>
+                </div>
+                <div id="categorized" class="col-md-4 mb-4 card">
+                    <h5>Quality Features</h5>
+                    <ul class="connected list Lheight" Name="QFeature" ondrop="drop(this,event)"
+                        ondragover="allowDrop(event)">
+                    </ul>
+                </div>
+                <div class="col-lg-12">
+                    {{ SubmitList }}
+                    <!-- COMPONENT END -->
+                    <div class="form-group float-right">
+                        <div class="col-lg-pull-6">
+                            <button type="reset" class="btn btn-primary  draggable"
+                                    style="background-color:#179c81;">
+                                Reset
+                            </button>
 
-    <div class="row">
-        <div id='mc' class="col-lg-12 mb-4 card" style="padding: 40px">
-            <h4>Categorize Data:</h4>
-            <ul class="connected list no3 list-inline">
-                <li class="list-group-item">Quality Feature 1</li>
-                <li class="list-group-item">Quality Feature 2</li>
-                <li class="list-group-item">Influencing Factor 1</li>
-                <li class="list-group-item">Influencing Factor 2</li>
-                <li class="list-group-item">Quality Feature 3</li>
-                <li class="list-group-item">Quality Feature 4</li>
-                <li class="list-group-item">Influencing Factor 1</li>
-                <li class="list-group-item">Influencing Factor 2</li>
-                <li class="list-group-item">Product Name</li>
-                <li class="list-group-item">LSL</li>
-                <li class="list-group-item">USL</li>
-                <li class="list-group-item">Product Date</li>
-            </ul>
-        </div>
-        <div id="categorized" class="col-md-4 mb-4 card">
-
-            <h5>Product Name</h5>
-            <ul class="connected list">
-                <li class="highlight">Item 1</li>
-            </ul>
-            <span id="OneItem">LSL</span>
-            <ul class="connected list">
-                <li class="highlight">Item 1</li>
-            </ul>
-            <span id="OneItem">USL</span>
-            <ul class="connected list">
-                <li class="highlight">Item 1</li>
-            </ul>
-            <span id="OneItem">Date</span>
-            <ul class="connected list">
-                <li class="highlight">Item 1</li>
-            </ul>
-
-        </div>
-        <div id="categorized" class="col-md-4 mb-4 card">
-
-            <h5>Influencing Factors</h5>
-            <ul class="connected list">
-                <li class="highlight">Item 1</li>
-                <li class="highlight">Item 2</li>
-                <li class="highlight">Item 3</li>
-                <li class="highlight">Item 4</li>
-                <li class="highlight">Item 5</li>
-                <li class="highlight">Item 6</li>
-            </ul>
-        </div>
-        <div id="categorized" class="col-md-4 mb-4 card">
-            <h5>Quality Features</h5>
-            <ul class="connected list">
-                <li class="highlight">Item 1</li>
-                <li class="highlight">Item 2</li>
-                <li class="highlight">Item 3</li>
-                <li class="highlight">Item 4</li>
-                <li class="highlight">Item 5</li>
-                <li class="highlight">Item 6</li>
-            </ul>
-        </div>
-    </div>
-     <div class="row my-4">
-        <div class="col-lg-12">
-            <form method="POST" action="#" enctype="multipart/form-data">
-                <!-- COMPONENT START -->
-
-                <!-- COMPONENT END -->
-                <div class="form-group float-right">
-                    <div class="col-lg-pull-6">
-                        <button type="reset" class="btn btn-primary  draggable" style="background-color:#179c81;">
-                            Reset
-                        </button>
-
-                        <button type="submit" class="btn btn-primary" style="background-color:#179c81;" disabled>
-                            Submit
-                        </button>
+                            <button type="submit" name="SubmitList" class="btn btn-primary"
+                                    style="background-color:#179c81;">
+                                Submit
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-        <!-- /.col-md-4 -->
+
+        </form>
     </div>
-</div>
-<!-- /.row -->
+
+
 {% endblock %}
