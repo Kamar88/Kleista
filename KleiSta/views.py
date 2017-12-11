@@ -3,6 +3,8 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import xlrd, os
 from models import Product, InfluencingFactor, QualityFeature
+import datetime
+from decimal import *
 
 
 def home(request):
@@ -14,19 +16,19 @@ def home(request):
         book = xlrd.open_workbook(settings.MEDIA_ROOT + "\\" + filename)
         xl_sheet = book.sheet_by_index(0)
         if xl_sheet.nrows > 0:
-           row = xl_sheet.row(0)
-           col_list = []
-           for cnt in range(len(row)): col_list.append(row[cnt].value.encode('utf-8').strip())
-           return render(request, 'Setup.html', {'ColList':col_list,'File_Name': filename})
+            row = xl_sheet.row(0)
+            col_list = []
+            for cnt in range(len(row)): col_list.append(row[cnt].value.encode('utf-8').strip())
+            return render(request, 'Setup.html', {'ColList': col_list, 'File_Name': filename})
         else:
             uploaded_file_url = "The Data Table that you have uploaded is empty. Please Upload another Data Table"
             return render(request, 'Setup.html', {'uploaded_file_url': uploaded_file_url})
     elif request.method == 'POST' and 'SubmitList' in request.POST:
-        productn= request.POST.getlist('ProductName')
+        productn = request.POST.getlist('ProductName')
         LSL = request.POST.getlist('LSL')
         USL = request.POST.getlist('USL')
         INF = request.POST.getlist('InflFactor')
-        QF  = request.POST.getlist('QFeature')
+        QF = request.POST.getlist('QFeature')
         filename = request.POST.get('FileName')
         Date = request.POST.getlist('Date')
 
@@ -37,16 +39,72 @@ def home(request):
 
         product = Product()
         ifc = InfluencingFactor()
-        qf = QualityFeature()
+        qfc = QualityFeature()
+        nrow = xl_sheet.nrows
 
+        for row in range(1, xl_sheet.nrows - 1):
+            # Product details
+            product.Name = xl_sheet.cell_value(row, int(productn[0])).encode('utf-8').strip()
+            cell = xl_sheet.cell_value(row, int(productn[0])).encode('utf-8').strip()
+            product.OrderNum = row
+            type = xl_sheet.cell_type(row, int(productn[0]))
+            if len(LSL):
+                type = xl_sheet.cell_type(row, int(LSL[0]))
+                if (type == 2):
+                    product.LSL = Decimal(str(xl_sheet.cell_value(row, int(LSL[0]))).encode('utf-8'))
+                else:
+                    product.LSL = 0
+            else:
+                product.LSL = 0
+            if len(USL):
+                type = xl_sheet.cell_type(row, int(USL[0]))
+                if (type == 2):
+                    product.USL = Decimal(str(xl_sheet.cell_value(row, int(USL[0]))).encode('utf-8'))
+                else:
+                    product.USL = 0
+            else:
+                product.USL = 0
+            if len(Date):
+                product.ExportDate = datetime.datetime(
+                    *xlrd.xldate_as_tuple(xl_sheet.cell_value(row, int(Date[0])), book.datemode))
+            else:
+                product.ExportDate = " "
 
-        for row in range(0, xl_sheet.nrows):
-          product.Name = xl_sheet.cell_value(row + 1, int(productn[0]))
+            product.save()
 
-        return render(request, 'Setup.html',{})
+            # QualityFeatures
+            for QFI in QF:
+                qfc.Name = xl_sheet.cell_value(0, int(QFI)).encode('utf-8').strip()
+                type = xl_sheet.cell_type(row, int(QFI))
+                if (type == 2):
+                    qfc.Value = Decimal(str(xl_sheet.cell_value(row, int(QFI))).encode('utf-8'))
+                else:
+                    qfc.Value = 0
+                qfc.ProductId = product
+                qfc.save()
 
+                # Influncing Factor Details
+            for IFE in INF:
+                ifc.Name = xl_sheet.cell_value(0, int(IFE)).encode('utf-8').strip()
+                type = xl_sheet.cell_type(row, int(IFE))
+                if (type == 2):
+                    ifc.Type = "Decimal"
+                    ifc.Value = Decimal(str(xl_sheet.cell_value(row, int(IFE))).encode('utf-8'))
+                elif (type == 1):
+                    ifc.Type = "String"
+                    ifc.Value = xl_sheet.cell_value(row, int(IFE)).encode('utf-8').strip()
+                elif (type == 3):
+                    ifc.Type = "Date"
+                    ifc.Value = datetime.datetime(
+                        *xlrd.xldate_as_tuple(xl_sheet.cell_value(row, int(IFE)), book.datemode))
+                else:
+                    ifc.Value = 0
+                ifc.ProductId = product
+                ifc.save()
 
-    return render(request,'Setup.html', {})
+        return render(request, 'Setup.html', {})
+
+    return render(request, 'Setup.html', {})
 
 
 def batch(request):

@@ -1,21 +1,25 @@
 from django.db import models
 from django.utils import timezone
+import datetime
+
+now = datetime.datetime.now()
 
 
 class Product(models.Model):
     Name = models.CharField(max_length=50)
-    ExportDate = models.DateTimeField
+    ExportDate = models.DateTimeField(
+        default=now.strftime("%Y-%m-%d %H:%M"))
     ImportDate = models.DateTimeField(
-        default=timezone.now)
-    LSL = models.DecimalField
-    USL = models.DecimalField
+        default=now.strftime("%Y-%m-%d %H:%M"))
+    LSL = models.DecimalField(max_digits=5, decimal_places=2,default=0.0)
+    USL = models.DecimalField(max_digits=5, decimal_places=2,default=0.0)
     SampleNum = models.IntegerField
-    OrderNum = models.IntegerField      #to save the order of the data in the excel sheet in case exportDate is not available
+    OrderNum = models.IntegerField  # to save the order of the data in the excel sheet in case exportDate is not available
 
 
 class QualityFeature(models.Model):
     Name = models.CharField(max_length=50)
-    Value = models.DecimalField
+    Value = models.DecimalField(max_digits=5, decimal_places=2,default=0.0)
     ProductId = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 
