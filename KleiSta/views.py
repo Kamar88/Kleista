@@ -37,12 +37,12 @@ def home(request):
         book = xlrd.open_workbook(settings.MEDIA_ROOT + "\\" + filename.encode('utf-8').strip())
         xl_sheet = book.sheet_by_index(0)
 
-        product = Product()
-        ifc = InfluencingFactor()
-        qfc = QualityFeature()
-        nrow = xl_sheet.nrows
 
-        for row in range(1, xl_sheet.nrows - 1):
+
+        for row in range(1, xl_sheet.nrows ):
+            product = Product()
+
+            nrow = xl_sheet.nrows
             # Product details
             product.Name = xl_sheet.cell_value(row, int(productn[0])).encode('utf-8').strip()
             cell = xl_sheet.cell_value(row, int(productn[0])).encode('utf-8').strip()
@@ -74,6 +74,7 @@ def home(request):
 
             # QualityFeatures
             for QFI in QF:
+                qfc = QualityFeature()
                 qfc.Name = xl_sheet.cell_value(0, int(QFI)).encode('utf-8').strip()
                 type = xl_sheet.cell_type(row, int(QFI))
                 if (type == 2):
@@ -85,6 +86,7 @@ def home(request):
 
                 # Influncing Factor Details
             for IFE in INF:
+                ifc = InfluencingFactor()
                 ifc.Name = xl_sheet.cell_value(0, int(IFE)).encode('utf-8').strip()
                 type = xl_sheet.cell_type(row, int(IFE))
                 if (type == 2):
