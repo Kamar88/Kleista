@@ -13,8 +13,8 @@ class Product(models.Model):
         default=now.strftime("%Y-%m-%d %H:%M"))
     LSL = models.DecimalField(max_digits=5, decimal_places=2,default=0.0)
     USL = models.DecimalField(max_digits=5, decimal_places=2,default=0.0)
-    SampleNum = models.IntegerField
-    OrderNum = models.IntegerField  # to save the order of the data in the excel sheet in case exportDate is not available
+    SampleNum = models.IntegerField()
+    OrderNum = models.IntegerField()  # to save the order of the data in the excel sheet in case exportDate is not available
 
 
 class QualityFeature(models.Model):

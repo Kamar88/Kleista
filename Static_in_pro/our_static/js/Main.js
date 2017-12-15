@@ -35,8 +35,8 @@ function drag(e, event) {
     event.dataTransfer.setData("Text", $(e).attr("value"));
     event.dataTransfer.setData("item", event.target.id);
     event.dataTransfer.setData("id", $(e).attr("id"));
-    $(e).parent().find('input#copyInput').filter(function () {
-        return this.name == $(e).attr("id")
+    //$(e).parent().find('input#copyInput').filter(function () {return this.name == $(e).attr("id")
+    $(e).parent().find('input').filter(function () {return this.id == $(e).attr("id")
     }).remove()
 
 
@@ -45,10 +45,11 @@ function drag(e, event) {
 function drop(e, event) {
     event.preventDefault();
     //alert($(e).attr("name"));
-    // $("#copyInput").attr("name",$(e).attr("name"));
+    $("#copyInput").attr("name",$(e).attr("name"));
     var clone = $("#copyInput").clone();
     $(clone).attr("value", event.dataTransfer.getData("Text"));
-    $(clone).attr("name", event.dataTransfer.getData("id"));
+    //$(clone).attr("name", $(e).attr("name"));
+    $(clone).attr("id", event.dataTransfer.getData("id"));
     //alert(event.dataTransfer.getData("Text"));
     var dataItem = event.dataTransfer.getData("item");
     $(e).append(document.getElementById(dataItem));
@@ -58,16 +59,17 @@ function drop(e, event) {
 
 function onClick() {
 
-     var ulm = document.getElementById("ML");
+    var ulm = document.getElementById("ML");
     var ul = document.getElementById("InflFactor");
     var listItem = ulm.getElementsByTagName("li");
     //("#ML").appendTo("#InflFactor");
-    alert(listItem.length)
+    //alert(listItem.length)
     while (listItem.length > 0){
     for (var i = 0; i < listItem.length; i++) {
         var clone = $("#copyInput").clone();
         $(clone).attr("value",$(listItem[i]).attr("value"));
-        $(clone).attr("name",$(listItem[i]).attr("id"));
+        $(clone).attr("id",$(listItem[i]).attr("id"));
+        $(clone).attr("name","InflFactor");
         //alert(event.dataTransfer.getData("Text"));
          $("#InflFactor").append(clone);
          $("#InflFactor").append(listItem[i]);
