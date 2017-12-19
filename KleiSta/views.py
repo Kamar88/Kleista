@@ -142,7 +142,10 @@ def home(request):
 
 
 def batch(request):
-    return render(request, "Batch.html", {})
+    infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
+    infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
+    infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
+    return render(request, 'Batch.html', {'infLD': infLD, 'infLS': infLS,'infLDT': infLDT })
 
 
 def group(request):
@@ -151,3 +154,4 @@ def group(request):
 
 def visualization(request):
     return render(request, "visualization.html", {})
+

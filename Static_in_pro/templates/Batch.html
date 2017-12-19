@@ -5,152 +5,116 @@
 {% endblock %}
 {% block content %}
     <div class="row my-4 card" style="padding: 40px">
-    <h4>Batch Definition</h4>
+        <h4>Batch Definition</h4>
         <div class="col-lg-12">
-            <form>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="BatchName">Batch Name:</label>
-                    <input type="text" class="form-control" id="BatchName" placeholder="Enter Batch Name">
+                    <input type="text" class="form-control" id="BatchName" placeholder="Enter Batch Name" required>
                 </div>
                 <div class="form-group">
                     <label for="BatchDescription">Batch Description:</label>
-                    <input type="text" class="form-control" id="BatchDescription" placeholder="Batch Description">
+                    <input type="text" class="form-control" id="BatchDescription" placeholder="Batch Description"
+                           required>
                 </div>
-                <div class="after-add-more">
+                <div class="row">
+                    <label for="InfluencingFactor">Select <b>Decimal</b> Influencing Factors:</label>
+                </div>
+                <div class="after-add-more-DF" id ="duplicaterD">
+
 
                     <div class="row">
-                        <div class="form-group col-lg-4">
-                            <label for="InfluencingFactor">Select Influencing Factors:</label>
+                        <div class="form-group col-lg-4" id="Infdiv">
+
                             <select class="form-control selectpicker" data-style="btn-primary" id="InfluencingFactor">
-                                <option>Tempreture</option>
-                                <option>Height</option>
-                                <option>Width</option>
-                                <option>Length</option>
-                                <option>Style</option>
+                                <option selected value> -- select an option -- </option>
+                                {% for entry in infLD %}
+                                    <option value="{{ entry.Name }}">{{ entry.Name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
-
-                        <div class="form-group col-lg-2">
-                            <label for="Operation">Value Range:</label>
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Operation">
-                                <option><</option>
-                                <option><=</option>
-                                <option>></option>
-                                <option>>=</option>
-                                <option>==</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-lg-2">
-                            <label for="Value" style="color: #ffffff">value</label>
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Value">
-                                <option>100 F</option>
-                                <option>200 F</option>
-                                <option>500 F</option>
-                                <option>600 F</option>
-                                <option>700 F</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-lg-1">
-                            <label for="Value" style="color: #ffffff">value</label>
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Value">
-                                <option><</option>
-                                <option><=</option>
-                                <option>></option>
-                                <option>>=</option>
-                                <option>==</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-lg-2">
-                            <label for="Value" style="color: #ffffff">value</label>
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Value">
-                                <option>100 F</option>
-                                <option>200 F</option>
-                                <option>500 F</option>
-                                <option>600 F</option>
-                                <option>700 F</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-1 ">
-                            <label for="Value" style="color: #ffffff">value</label>
-                            <button class="btn btn-primary btn-circle circle add-more" type="button"><i
+                        <div class="col-lg-1">
+                            <button class="btn btn-primary btn-circle circle" onclick="duplicate('after-add-more-DF',this,event)" type="button"><i
                                     class="glyphicon glyphicon-plus-sign">+</i></button>
                         </div>
-                    </div>
-                </div>
-
-                <div class="copy-fields">
-                    <div class="row">
-                        <div class="form-group col-lg-2">
-                            <select class="form-control btn-danger selectpicker" data-style="btn-primary"
-                                    id="Operation">
-                                <option>And</option>
-                                <option>OR</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-lg-4">
-                            <select class="form-control selectpicker" data-style="btn-primary" id="InfluencingFactor">
-                                <option>Tempreture</option>
-                                <option>Height</option>
-                                <option>Width</option>
-                                <option>Length</option>
-                                <option>Style</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-lg-2">
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Operation">
-                                <option><</option>
-                                <option><=</option>
-                                <option>></option>
-                                <option>>=</option>
-                                <option>==</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-lg-2">
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Value">
-                                <option>100 F</option>
-                                <option>200 F</option>
-                                <option>500 F</option>
-                                <option>600 F</option>
-                                <option>700 F</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-lg-1">
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Value">
-                                <option><</option>
-                                <option><=</option>
-                                <option>></option>
-                                <option>>=</option>
-                                <option>==</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-lg-2">
-                            <select class="form-control selectpicker" data-style="btn-primary" id="Value">
-                                <option>100 F</option>
-                                <option>200 F</option>
-                                <option>500 F</option>
-                                <option>600 F</option>
-                                <option>700 F</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-1 input-group">
-
-                            <button class="btn btn-primary circle remove" type="button"><i
+                    <div class="col-lg-1">
+                      <button class="btn btn-primary btn-circle circle" onclick="onClickremove('after-add-more-DF',this,event)"
+                                    type="button"><i
                                     class="glyphicon glyphicon-minus-sign"></i>-
                             </button>
 
-                        </div>
                     </div>
+                    </div>
+
+                </div>
+
+               <div class="row">
+                   <label for="InfluencingFactor">Select <b>String</b> Influencing Factors:</label>
+                </div>
+                <div class="after-add-more-S" id ="duplicaterS">
+
+
+                    <div class="row">
+                        <div class="form-group col-lg-4" id="Infdiv">
+
+                            <select class="form-control selectpicker" data-style="btn-primary" id="InfluencingFactor">
+                                <option selected value> -- select an option -- </option>
+                                {% for entry in infLS %}
+                                    <option value="{{ entry.Name }}">{{ entry.Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-1">
+                            <button class="btn btn-primary btn-circle circle" onclick="duplicate('after-add-more-S',this,event)" type="button"><i
+                                    class="glyphicon glyphicon-plus-sign">+</i></button>
+                        </div>
+                    <div class="col-lg-1">
+                      <button class="btn btn-primary btn-circle circle" onclick="onClickremove('after-add-more-S',this,event)"
+                                    type="button"><i
+                                    class="glyphicon glyphicon-minus-sign"></i>-
+                            </button>
+
+                    </div>
+                    </div>
+
+                </div>
+
+             <div class="row">
+                   <label for="InfluencingFactor">Select <b>Date</b> Influencing Factors:</label>
+                </div>
+                <div class="after-add-more-DT" id ="duplicaterDT">
+
+
+                    <div class="row">
+                        <div class="form-group col-lg-4" id="Infdiv">
+
+                            <select class="form-control selectpicker" data-style="btn-primary" id="InfluencingFactor">
+                                <option selected value> -- select an option -- </option>
+                                {% for entry in infLDT %}
+                                    <option value="{{ entry.Name }}">{{ entry.Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-1">
+                            <button class="btn btn-primary btn-circle circle" onclick="duplicate('after-add-more-DT',this,event)" type="button"><i
+                                    class="glyphicon glyphicon-plus-sign">+</i></button>
+                        </div>
+                    <div class="col-lg-1">
+                      <button class="btn btn-primary btn-circle circle" onclick="onClickremove('after-add-more-DT',this,event)"
+                                    type="button"><i
+                                    class="glyphicon glyphicon-minus-sign"></i>-
+                            </button>
+
+                    </div>
+                    </div>
+
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
 
                 <div class="row" style="margin: 20px;">
-                     <h4>Product Details:</h4>
-                <div class="form-group col-lg-12">
+                    <h4>Product Details:</h4>
+                    <div class="form-group col-lg-12">
                         <table class="table table-striped table-bordered">
                             <thead class="thead-default">
                             <tr>
@@ -183,7 +147,7 @@
                         </table>
 
                     </div>
-</div>
+                </div>
             </form>
         </div>
     </div>
