@@ -39,8 +39,6 @@ function drag(e, event) {
     $(e).parent().find('input').filter(function () {
         return this.id == $(e).attr("id")
     }).remove()
-
-
 }
 
 function drop(e, event) {
@@ -98,6 +96,7 @@ $(document).on('click', '.btn-add', function (e) {
         e.preventDefault();
         return false;
     });
+var countinfS = 0 ;
 
 function onClickremove(t, e, event) {
     event.preventDefault();
@@ -108,6 +107,7 @@ function onClickremove(t, e, event) {
     if(t == "after-add-more-S"){
     if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
         $(e).closest('.after-add-more-S').remove();
+        --countinfS ;
     }}
      if(t == "after-add-more-DT"){
     if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
@@ -117,27 +117,45 @@ function onClickremove(t, e, event) {
 
 }
 
-$('.select-decimal').selectize({
-					maxItems: 3
-				});
+
+
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+    $('.js-example-basic-single').select2();
+    $('.input-daterange').datepicker({
+});
+
+});
+
 
 
 var id = 0, is=0, idt=0;
 var original = document.getElementById('duplicater');
 
+
+
 function duplicate(t, e, event) {
     event.preventDefault();
 
  if(t == "after-add-more-DF"){
+     var operation = document.getElementById('AndOrFDF');
+     var cloneOp = operation.cloneNode(true);
      var original = document.getElementById('duplicaterD');
      var clone = original.cloneNode(true); // "deep" clone
      clone.id = "duplicaterD" + ++id;
+     cloneOp.id = "DuplicateOp"+ ++id;
+     cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));}
+     $(cloneOp).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
+    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
+
+ }
     if(t == "after-add-more-S"){
      var originalS = document.getElementById('duplicaterS');
      var clone = originalS.cloneNode(true); // "deep" clone
      clone.id = "duplicaterS" + ++is;
+     ++countinfS ;
+     var childOption = clone.getElementsByTagName('Select') ;
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));}
     if(t == "after-add-more-DT"){
@@ -165,11 +183,26 @@ $(function () {
             .html('<span class="glyphicon glyphicon-minus"></span>');
     }).on('click', '.btn-remove', function (e) {
         $(this).parents('.entry:first').remove();
-
         e.preventDefault();
         return false;
     });
+
     });
+
+function OnChangeIS(e){
+        var val = $(e).val();
+        var idn = $(e).attr("id") ;
+        var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
+        for (var i=0; i<sub.length; i++){
+            if(sub.options[i].id == val && sub.options[i].value !== '')
+                sub.options[i].hidden = false ;
+            else
+                sub.options[i].hidden = true ;
+        }
+
+}
+
+
 
 //$('#move_INF').click(function() {
 //    $('.InflFactor').append($('.ML .selected').removeClass('selected'));

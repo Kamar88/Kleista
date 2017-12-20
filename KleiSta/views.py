@@ -142,10 +142,16 @@ def home(request):
 
 
 def batch(request):
+    if request.method == 'POST' and 'Submit' in request.POST:
+        list = request.POST.get('BatchName')
+        listinf = request.POST.getlist('InfDe')
+
+
     infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
     infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
     infSV =InfluencingFactor.objects.filter(Type="String").values('Name','Value').order_by('Name','Value').distinct()
     infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
+
     return render(request, 'Batch.html', {'infLD': infLD, 'infLS': infLS,'infLDT': infLDT ,'infSV': infSV })
 
 

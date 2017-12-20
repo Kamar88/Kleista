@@ -39,8 +39,6 @@ function drag(e, event) {
     $(e).parent().find('input').filter(function () {
         return this.id == $(e).attr("id")
     }).remove()
-
-
 }
 
 function drop(e, event) {
@@ -104,15 +102,28 @@ function onClickremove(t, e, event) {
     event.preventDefault();
     if(t == "after-add-more-DF"){
     if ($(e).closest('.after-add-more-DF').attr("id") != "duplicaterD") {
+        var ido = $(e).closest('.after-add-more-DF').attr('id');
+        ido = "s" + ido ;
+        var op = document.getElementById(ido);
+        $(op).remove() ;
         $(e).closest('.after-add-more-DF').remove();
+
     }}
     if(t == "after-add-more-S"){
     if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
+        var ido = $(e).closest('.after-add-more-S').attr('id');
+        ido = "s" + ido ;
+        var op = document.getElementById(ido);
+        $(op).remove() ;
         $(e).closest('.after-add-more-S').remove();
         --countinfS ;
     }}
      if(t == "after-add-more-DT"){
     if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
+        var ido = $(e).closest('.after-add-more-DT').attr('id');
+        ido = "s" + ido ;
+        var op = document.getElementById(ido);
+        $(op).remove() ;
         $(e).closest('.after-add-more-DT').remove();
     }}
 
@@ -140,25 +151,41 @@ function duplicate(t, e, event) {
     event.preventDefault();
 
  if(t == "after-add-more-DF"){
+     var operation = document.getElementById('AndOrFDF');
+     var cloneOp = operation.cloneNode(true);
      var original = document.getElementById('duplicaterD');
      var clone = original.cloneNode(true); // "deep" clone
      clone.id = "duplicaterD" + ++id;
+     cloneOp.id = "s" + clone.id ;
+     cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));}
+    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+ }
     if(t == "after-add-more-S"){
+     var operation = document.getElementById('AndOrFDF');
+     var cloneOp = operation.cloneNode(true);
      var originalS = document.getElementById('duplicaterS');
      var clone = originalS.cloneNode(true); // "deep" clone
      clone.id = "duplicaterS" + ++is;
+     cloneOp.id = "s" + clone.id ;
+     cloneOp.hidden = false ;
      ++countinfS ;
      var childOption = clone.getElementsByTagName('Select') ;
     // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));}
+    $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
     if(t == "after-add-more-DT"){
+        var operation = document.getElementById('AndOrFDF');
+     var cloneOp = operation.cloneNode(true);
         var originalS = document.getElementById('duplicaterDT');
      var clone = originalS.cloneNode(true); // "deep" clone
      clone.id = "duplicaterDT" + ++is;
+      cloneOp.id = "s" + clone.id ;
+     cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));}
+    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
 }
 
 $(function () {
@@ -178,7 +205,6 @@ $(function () {
             .html('<span class="glyphicon glyphicon-minus"></span>');
     }).on('click', '.btn-remove', function (e) {
         $(this).parents('.entry:first').remove();
-
         e.preventDefault();
         return false;
     });
@@ -186,7 +212,6 @@ $(function () {
     });
 
 function OnChangeIS(e){
-
         var val = $(e).val();
         var idn = $(e).attr("id") ;
         var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
@@ -196,7 +221,6 @@ function OnChangeIS(e){
             else
                 sub.options[i].hidden = true ;
         }
-
 
 }
 
