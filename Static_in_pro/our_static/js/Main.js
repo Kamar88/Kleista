@@ -98,6 +98,7 @@ $(document).on('click', '.btn-add', function (e) {
         e.preventDefault();
         return false;
     });
+var countinfS = 0 ;
 
 function onClickremove(t, e, event) {
     event.preventDefault();
@@ -108,6 +109,7 @@ function onClickremove(t, e, event) {
     if(t == "after-add-more-S"){
     if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
         $(e).closest('.after-add-more-S').remove();
+        --countinfS ;
     }}
      if(t == "after-add-more-DT"){
     if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
@@ -117,8 +119,22 @@ function onClickremove(t, e, event) {
 
 }
 
+
+
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2();
+    $('.js-example-basic-single').select2();
+    $('.input-daterange').datepicker({
+});
+
+});
+
+
+
 var id = 0, is=0, idt=0;
 var original = document.getElementById('duplicater');
+
+
 
 function duplicate(t, e, event) {
     event.preventDefault();
@@ -133,6 +149,8 @@ function duplicate(t, e, event) {
      var originalS = document.getElementById('duplicaterS');
      var clone = originalS.cloneNode(true); // "deep" clone
      clone.id = "duplicaterS" + ++is;
+     ++countinfS ;
+     var childOption = clone.getElementsByTagName('Select') ;
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));}
     if(t == "after-add-more-DT"){
@@ -164,7 +182,25 @@ $(function () {
         e.preventDefault();
         return false;
     });
+
     });
+
+function OnChangeIS(e){
+
+        var val = $(e).val();
+        var idn = $(e).attr("id") ;
+        var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
+        for (var i=0; i<sub.length; i++){
+            if(sub.options[i].id == val && sub.options[i].value !== '')
+                sub.options[i].hidden = false ;
+            else
+                sub.options[i].hidden = true ;
+        }
+
+
+}
+
+
 
 //$('#move_INF').click(function() {
 //    $('.InflFactor').append($('.ML .selected').removeClass('selected'));

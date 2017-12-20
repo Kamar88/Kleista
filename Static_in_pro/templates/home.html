@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     {% block title %}
-    <title>KleiSta</title>
+        <title>KleiSta</title>
     {% endblock %}
     <link rel="shortcut icon" href="http://www.ipt.fraunhofer.de/static/all/img/favicon.ico" type="image/x-icon">
     <!-- Bootstrap core CSS -->
@@ -19,7 +19,8 @@
 
     <link href="{% static 'css/Custom.css' %}" rel="stylesheet">
 
-
+    <link href="{% static 'css/select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -76,6 +77,8 @@
 <script src="{% static 'js/Main.js' %}"></script>
 <script src="{% static 'js/interact.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
 {% comment %}<script src="{% static 'js/jquery.sortable.js' %}"></script>
 <script>
     $(function () {

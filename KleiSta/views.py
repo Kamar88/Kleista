@@ -144,8 +144,9 @@ def home(request):
 def batch(request):
     infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
     infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
+    infSV =InfluencingFactor.objects.filter(Type="String").values('Name','Value').order_by('Name','Value').distinct()
     infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
-    return render(request, 'Batch.html', {'infLD': infLD, 'infLS': infLS,'infLDT': infLDT })
+    return render(request, 'Batch.html', {'infLD': infLD, 'infLS': infLS,'infLDT': infLDT ,'infSV': infSV })
 
 
 def group(request):

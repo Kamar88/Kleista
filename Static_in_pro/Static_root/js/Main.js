@@ -117,6 +117,11 @@ function onClickremove(t, e, event) {
 
 }
 
+$('.select-decimal').selectize({
+					maxItems: 3
+				});
+
+
 var id = 0, is=0, idt=0;
 var original = document.getElementById('duplicater');
 
