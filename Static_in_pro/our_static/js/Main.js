@@ -163,7 +163,7 @@ function duplicate(t, e, event) {
     $(cloneOp).insertBefore("#" + $(clone).attr('id'));
  }
     if(t == "after-add-more-S"){
-     var operation = document.getElementById('AndOrFDF');
+     var operation = document.getElementById('AndOrFS');
      var cloneOp = operation.cloneNode(true);
      var originalS = document.getElementById('duplicaterS');
      var clone = originalS.cloneNode(true); // "deep" clone
@@ -176,7 +176,7 @@ function duplicate(t, e, event) {
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
     $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
     if(t == "after-add-more-DT"){
-        var operation = document.getElementById('AndOrFDF');
+        var operation = document.getElementById('AndOrFDa');
      var cloneOp = operation.cloneNode(true);
         var originalS = document.getElementById('duplicaterDT');
      var clone = originalS.cloneNode(true); // "deep" clone

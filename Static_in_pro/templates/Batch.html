@@ -20,7 +20,25 @@
                 </div>
                  <div class="row AndOrFDF" id="AndOrFDF" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationDec">
+                            <option selected value> -- select an option --</option>
+                            <option>And</option>
+                            <option>Or</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row AndOrFDF" id="AndOrFDa" style="padding-left: 25px" hidden>
+                    <div class="form-group col-lg-3" style=" margin-top: 25px;">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationDat">
+                            <option selected value> -- select an option --</option>
+                            <option>And</option>
+                            <option>Or</option>
+                        </select>
+                    </div>
+                </div>
+            <div class="row AndOrFDF" id="AndOrFS" style="padding-left: 25px" hidden>
+                    <div class="form-group col-lg-3" style=" margin-top: 25px;">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationS">
                             <option selected value> -- select an option --</option>
                             <option>And</option>
                             <option>Or</option>
@@ -106,7 +124,7 @@
 
                                 <select class="form-control selectpicker" onchange="OnChangeIS(this)"
                                         data-style="btn-primary"
-                                        id="InfluencingFactorS">
+                                        id="InfluencingFactorS" name="InfS">
                                     <option selected value> -- select an option --</option>
                                     {% for entry in infLS %}
                                         <option value="{{ entry.Name }}">{{ entry.Name }}</option>
@@ -161,7 +179,7 @@
                             <div class="form-group col-lg-4" id="Infdiv">
 
                                 <select class="form-control selectpicker" data-style="btn-primary"
-                                        id="InfluencingFactordt">
+                                        id="InfluencingFactordt" name="InfDa">
                                     <option selected value> -- select an option --</option>
                                     {% for entry in infLDT %}
                                         <option value="{{ entry.Name }}">{{ entry.Name }}</option>

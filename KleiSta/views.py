@@ -143,9 +143,11 @@ def home(request):
 
 def batch(request):
     if request.method == 'POST' and 'Submit' in request.POST:
-        list = request.POST.get('BatchName')
-        listinf = request.POST.getlist('InfDe')
-
+        BatchN = request.POST.get('BatchName')
+        BatchD= request.POST.get('BatchDexription')
+        listinfDe = request.POST.getlist('InfDe') #retrive all the decimal lists from batch
+        listinfDa = request.POST.getlist('InfDa') #retrive all the date lists
+        listinfS = request.POST.getlist('InfDa')  # retrive all the date lists
 
     infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
     infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
