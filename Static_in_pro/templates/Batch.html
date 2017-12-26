@@ -21,27 +21,24 @@
                  <div class="row AndOrFDF" id="AndOrFDF" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
                         <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationDec">
-                            <option selected value> -- select an option --</option>
-                            <option>And</option>
-                            <option>Or</option>
+                            <option selected value="And">And</option>
+                            <option value="Or">Or</option>
                         </select>
                     </div>
                 </div>
                 <div class="row AndOrFDF" id="AndOrFDa" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
                         <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationDat">
-                            <option selected value> -- select an option --</option>
-                            <option>And</option>
-                            <option>Or</option>
+                            <option selected value="And">And</option>
+                            <option value="Or">Or</option>
                         </select>
                     </div>
                 </div>
             <div class="row AndOrFDF" id="AndOrFS" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
                         <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationS">
-                            <option selected value> -- select an option --</option>
-                            <option>And</option>
-                            <option>Or</option>
+                            <option selected value="And">And</option>
+                            <option value="Or">Or</option>
                         </select>
                     </div>
                 </div>
@@ -62,28 +59,30 @@
                                 </select>
                             </div>
                             <div class="form-group col-lg-1">
-                                <select class="form-control selectpicker" data-style="btn-primary" id="OperationD1">
-                                    <option><</option>
-                                    <option><=</option>
-                                    <option>></option>
-                                    <option>>=</option>
-                                    <option>==</option>
+                                <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween1" id="OperationD1">
+                                    <option selected value></option>
+                                    <option value ="lessThan"><</option>
+                                    <option value ="lessThanEqual"><=</option>
+                                    <option value="greater">></option>
+                                    <option value="greaterThanEqual">>=</option>
+                                    <option value="Equal">==</option>
                                 </select>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" id="DecimalValueInf">
+                                <input type="text" class="form-control" id="DecimalValueInf1" name="DecimalValueInf1">
                             </div>
                             <div class="form-group col-lg-1">
-                                <select class="form-control selectpicker" data-style="btn-primary" id="OperationD2">
-                                    <option><</option>
-                                    <option><=</option>
-                                    <option>></option>
-                                    <option>>=</option>
-                                    <option>==</option>
+                                    <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween2" id="OperationD1">
+                                    <option selected value></option>
+                                    <option value ="lessThan"><</option>
+                                    <option value ="lessThanEqual"><=</option>
+                                    <option value="greater">></option>
+                                    <option value="greaterThanEqual">>=</option>
+                                    <option value="Equal">==</option>
                                 </select>
                             </div>
                             <div class="form-group col-lg-2">
-                                <input type="text" class="form-control" id="DecimalValueInf">
+                                <input type="text" class="form-control" id="DecimalValueInf2" name="DecimalValueInf2">
                             </div>
                             <div class="col-lg-1">
                                 <button class="btn btn-primary btn-circle circle"
@@ -104,10 +103,9 @@
                 </div>
                 <div class="row" style=" margin-top: 25px;">
                     <div class="form-group col-lg-3">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="OperationDecString">
-                            <option selected value> -- select an option --</option>
-                            <option>And</option>
-                            <option>Or</option>
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" name="OperationDecString" id="OperationDecString">
+                            <option  selected value="And">And</option>
+                            <option value="Or">Or</option>
                         </select>
                     </div>
                 </div>
@@ -134,7 +132,7 @@
                             <div class="form-group col-lg-6" id="Infdiv">
 
                                 <select class="form-control selectpicker InfluencingFactorV" data-style="btn-primary"
-                                        id="InfluencingFactorV">
+                                       name="InfluencingFactorSV" id="InfluencingFactorV">
                                     <option selected value> -- select an option --</option>
                                     {% for entry in infSV %}
                                         <option value="{{ entry.Value }}" id="{{ entry.Name }}"
@@ -161,10 +159,9 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="OperationStringDate">
-                            <option selected value> -- select an option --</option>
-                            <option>And</option>
-                            <option>Or</option>
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" name="OperationStringDate" id="OperationStringDate">
+                            <option selected value="And">And</option>
+                            <option value="Or">Or</option>
                         </select>
                     </div>
                 </div>
@@ -189,9 +186,9 @@
 
                             <div class="col-lg-6">
                                 <div class="input-group input-daterange">
-                                    <input type="text" class="form-control" value="2017-12-30">
+                                    <input type="text" name="Date1" class="form-control" value="2017-12-30">
                                     <div class="input-group-addon">to</div>
-                                    <input type="text" class="form-control" value="2017-12-30">
+                                    <input type="text" name="Date2" class="form-control" value="2017-12-30">
                                 </div>
                             </div>
                             <div class="col-lg-1">
