@@ -135,8 +135,9 @@ function onClickremove(t, e, event) {
 $(document).ready(function() {
     $('.js-example-basic-multiple').select2();
     $('.js-example-basic-single').select2();
-    $('.input-daterange').datepicker({
-});
+   // $('.input-daterange').datepicker({
+//});
+      $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
 
 });
 
@@ -185,7 +186,9 @@ function duplicate(t, e, event) {
      cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
-    $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    }
 }
 
 $(function () {

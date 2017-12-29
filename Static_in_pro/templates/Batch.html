@@ -1,5 +1,5 @@
 {% extends "home.html" %}
-
+{% load static %}
 {% block title %}
     <title>Batch Definition</title>
 {% endblock %}
@@ -11,16 +11,19 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="BatchName">Batch Name:</label>
-                    <input type="text" class="form-control" name="BatchName" id="BatchName" placeholder="Enter Batch Name" required>
+                    <input type="text" class="form-control" name="BatchName" id="BatchName"
+                           placeholder="Enter Batch Name" required>
                 </div>
                 <div class="form-group">
                     <label for="BatchDescription">Batch Description:</label>
-                    <input type="text" class="form-control" name="BatchDescription" id="BatchDescription" placeholder="Batch Description"
+                    <input type="text" class="form-control" name="BatchDescription" id="BatchDescription"
+                           placeholder="Batch Description"
                            required>
                 </div>
-                 <div class="row AndOrFDF" id="AndOrFDF" style="padding-left: 25px" hidden>
+                <div class="row AndOrFDF" id="AndOrFDF" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationDec">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation"
+                                name="OperationDec">
                             <option selected value="And">And</option>
                             <option value="Or">Or</option>
                         </select>
@@ -28,15 +31,17 @@
                 </div>
                 <div class="row AndOrFDF" id="AndOrFDa" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationDat">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation"
+                                name="OperationDat">
                             <option selected value="And">And</option>
                             <option value="Or">Or</option>
                         </select>
                     </div>
                 </div>
-            <div class="row AndOrFDF" id="AndOrFS" style="padding-left: 25px" hidden>
+                <div class="row AndOrFDF" id="AndOrFS" style="padding-left: 25px" hidden>
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation" name="OperationS">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation"
+                                name="OperationS">
                             <option selected value="And">And</option>
                             <option value="Or">Or</option>
                         </select>
@@ -52,17 +57,18 @@
                                 <select class="form-control selectpicker"
                                         data-style="btn-primary" name="InfDe"
                                         id="InfluencingFactor">
-                                 <option selected value> -- select an option --</option>
+                                    <option selected value> -- select an option --</option>
                                     {% for entry in infLD %}
                                         <option value="{{ entry.Name }}">{{ entry.Name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group col-lg-1">
-                                <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween1" id="OperationD1">
+                                <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween1"
+                                        id="OperationD1">
                                     <option selected value></option>
-                                    <option value ="lessThan"><</option>
-                                    <option value ="lessThanEqual"><=</option>
+                                    <option value="lessThan"><</option>
+                                    <option value="lessThanEqual"><=</option>
                                     <option value="greater">></option>
                                     <option value="greaterThanEqual">>=</option>
                                     <option value="Equal">==</option>
@@ -72,10 +78,11 @@
                                 <input type="text" class="form-control" id="DecimalValueInf1" name="DecimalValueInf1">
                             </div>
                             <div class="form-group col-lg-1">
-                                    <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween2" id="OperationD1">
+                                <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween2"
+                                        id="OperationD1">
                                     <option selected value></option>
-                                    <option value ="lessThan"><</option>
-                                    <option value ="lessThanEqual"><=</option>
+                                    <option value="lessThan"><</option>
+                                    <option value="lessThanEqual"><=</option>
                                     <option value="greater">></option>
                                     <option value="greaterThanEqual">>=</option>
                                     <option value="Equal">==</option>
@@ -103,8 +110,9 @@
                 </div>
                 <div class="row" style=" margin-top: 25px;">
                     <div class="form-group col-lg-3">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" name="OperationDecString" id="OperationDecString">
-                            <option  selected value="And">And</option>
+                        <select class="form-control btn-info selectpicker" data-style="btn-info"
+                                name="OperationDecString" id="OperationDecString">
+                            <option selected value="And">And</option>
                             <option value="Or">Or</option>
                         </select>
                     </div>
@@ -132,10 +140,9 @@
                             <div class="form-group col-lg-6" id="Infdiv">
 
                                 <select class="form-control selectpicker InfluencingFactorV" data-style="btn-primary"
-                                       name="InfluencingFactorSV" id="InfluencingFactorV">
-                                    <option selected value> -- select an option --</option>
+                                        name="InfluencingFactorSV" id="InfluencingFactorV" multiple>
                                     {% for entry in infSV %}
-                                        <option value="{{ entry.Value }}" id="{{ entry.Name }}"
+                                        <option value="{{ entry.Value }}:{{ entry.Name }}" id="{{ entry.Name }}"
                                                 hidden>{{ entry.Value }}</option>
                                     {% endfor %}
                                 </select>
@@ -159,7 +166,8 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-lg-3" style=" margin-top: 25px;">
-                        <select class="form-control btn-info selectpicker" data-style="btn-info" name="OperationStringDate" id="OperationStringDate">
+                        <select class="form-control btn-info selectpicker" data-style="btn-info"
+                                name="OperationStringDate" id="OperationStringDate">
                             <option selected value="And">And</option>
                             <option value="Or">Or</option>
                         </select>
@@ -175,7 +183,7 @@
                         <div class="row" style=" padding-left: 25px;">
                             <div class="form-group col-lg-4" id="Infdiv">
 
-                                <select class="form-control selectpicker" data-style="btn-primary"
+                                <select class="form-control" data-style="btn-primary"
                                         id="InfluencingFactordt" name="InfDa">
                                     <option selected value> -- select an option --</option>
                                     {% for entry in infLDT %}
@@ -184,12 +192,19 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-6">
-                                <div class="input-group input-daterange">
-                                    <input type="text" name="Date1" class="form-control" value="2017-12-30">
-                                    <div class="input-group-addon">to</div>
-                                    <input type="text" name="Date2" class="form-control" value="2017-12-30">
+                            <div class="col-lg-3">
+                                <div class="input-group date form_datetime" data-link-field="dtp_input1">
+                                    <input type="text"  class="form-control" value="">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"><i class="fa fa-calendar" aria-hidden="true"></i></span></span>
                                 </div>
+                                <input type="hidden" name="Date1"  id="dtp_input1" value="" /><br/>
+                            </div>
+                        <div class="col-lg-3">
+                                <div class="input-group date form_datetime" data-link-field="dtp_input2">
+                                    <input type="text" class="form-control">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"><i class="fa fa-calendar" aria-hidden="true"></i></span></span>
+                                </div>
+                            <input type="hidden" name="Date2"  id="dtp_input2" value="" /><br/>
                             </div>
                             <div class="col-lg-1">
                                 <button class="btn btn-primary btn-circle circle pull-right"
@@ -205,8 +220,8 @@
 
                             </div>
                         </div>
-
                     </div>
+
                 </div>
                 <button type="submit" name="Submit" class="btn btn-primary" style="margin-top: 20px">Submit</button>
 

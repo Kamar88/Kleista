@@ -102,15 +102,28 @@ function onClickremove(t, e, event) {
     event.preventDefault();
     if(t == "after-add-more-DF"){
     if ($(e).closest('.after-add-more-DF').attr("id") != "duplicaterD") {
+        var ido = $(e).closest('.after-add-more-DF').attr('id');
+        ido = "s" + ido ;
+        var op = document.getElementById(ido);
+        $(op).remove() ;
         $(e).closest('.after-add-more-DF').remove();
+
     }}
     if(t == "after-add-more-S"){
     if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
+        var ido = $(e).closest('.after-add-more-S').attr('id');
+        ido = "s" + ido ;
+        var op = document.getElementById(ido);
+        $(op).remove() ;
         $(e).closest('.after-add-more-S').remove();
         --countinfS ;
     }}
      if(t == "after-add-more-DT"){
     if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
+        var ido = $(e).closest('.after-add-more-DT').attr('id');
+        ido = "s" + ido ;
+        var op = document.getElementById(ido);
+        $(op).remove() ;
         $(e).closest('.after-add-more-DT').remove();
     }}
 
@@ -122,8 +135,9 @@ function onClickremove(t, e, event) {
 $(document).ready(function() {
     $('.js-example-basic-multiple').select2();
     $('.js-example-basic-single').select2();
-    $('.input-daterange').datepicker({
-});
+   // $('.input-daterange').datepicker({
+//});
+      $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
 
 });
 
@@ -143,27 +157,38 @@ function duplicate(t, e, event) {
      var original = document.getElementById('duplicaterD');
      var clone = original.cloneNode(true); // "deep" clone
      clone.id = "duplicaterD" + ++id;
-     cloneOp.id = "DuplicateOp"+ ++id;
+     cloneOp.id = "s" + clone.id ;
      cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
-     $(cloneOp).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
-
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));
  }
     if(t == "after-add-more-S"){
+     var operation = document.getElementById('AndOrFS');
+     var cloneOp = operation.cloneNode(true);
      var originalS = document.getElementById('duplicaterS');
      var clone = originalS.cloneNode(true); // "deep" clone
      clone.id = "duplicaterS" + ++is;
+     cloneOp.id = "s" + clone.id ;
+     cloneOp.hidden = false ;
      ++countinfS ;
      var childOption = clone.getElementsByTagName('Select') ;
     // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));}
+    $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
     if(t == "after-add-more-DT"){
+        var operation = document.getElementById('AndOrFDa');
+     var cloneOp = operation.cloneNode(true);
         var originalS = document.getElementById('duplicaterDT');
      var clone = originalS.cloneNode(true); // "deep" clone
      clone.id = "duplicaterDT" + ++is;
+      cloneOp.id = "s" + clone.id ;
+     cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));}
+    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
+    $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    }
 }
 
 $(function () {

@@ -20,7 +20,9 @@
     <link href="{% static 'css/Custom.css' %}" rel="stylesheet">
 
     <link href="{% static 'css/select2.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 </head>
 
 <body>
@@ -74,26 +76,12 @@
 
 <!-- Bootstrap core JavaScript -->
 <script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/Main.js' %}"></script>
 <script src="{% static 'js/interact.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
 <script src="{% static 'js/select2.min.js' %}"></script>
-<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
-{% comment %}<script src="{% static 'js/jquery.sortable.js' %}"></script>
-<script>
-    $(function () {
-        $('.sortable').sortable();
-        $('.handles').sortable({
-            handle: 'span'
-        });
-        $('.connected').sortable({
-            connectWith: '.connected'
-        });
-        $('.exclude').sortable({
-            items: ':not(.disabled)'
-        });
-    });
-</script>{% endcomment %}
+<script src="{% static 'js/Main.js' %}"></script>
+
 
 </body>
 

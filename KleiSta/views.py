@@ -170,8 +170,8 @@ def batch(request):
             'InfluencingFactorSV')  # retrive all the string value lists from the batch page
         operationS = request.POST.getlist('OperationS')  # retrive the operation between the String values
 
-        operationDeS = request.POST.getlist('OperationDecString')
-        operationSD = request.POST.getlist('OperationStringDate')
+        operationDeS = request.POST.getlist('OperationDecString') #get the operation between decimal Lists and String Lists
+        operationSD = request.POST.getlist('OperationStringDate') #get the operation between String Lists and date list 
 
         # save Batch details to database
         batch = Batch()
@@ -190,17 +190,12 @@ def batch(request):
         infODec = InfluencingFactor.objects.filter(Name__in=infoDecEncoded)
         InfDecListID = [];
         infDecListCID = [];
-        cd = 0;
 
-        q = Q(Name__in=infoDecEncoded)
-        c = 0;
         cd = 0;
-        ##for c in range(infoDecOpBetwEncoded.count()+1):
-        q = Q()
         for i in infoDecEncoded:
             qn = Q(Name=i)
-            qv1= Q()
-            qv2= Q()
+            qv1 = Q()
+            qv2 = Q()
             if (infoDecValue1Encoded[cd]):
                 if (infoDecOpVal1wEncoded[cd] == 'lessThan'):
                     qv1 = Q(Value__lt=(infoDecValue1Encoded[cd]))
@@ -223,145 +218,61 @@ def batch(request):
                     qv2 = Q(Value__gte=(infoDecValue2Encoded[cd]))
                 elif (infoDecOpVal2wEncoded[cd] == 'Equal'):
                     qv2 = Q(Value=(infoDecValue2Encoded[cd]))
-            qi = (qn & qv1 & qv2)
+            qi = (qn & qv1 & qv2)  # build the clause of the query depending on the previous selected value
             if (cd > 0):
-                if (infoDecOpBetwEncoded[cd-1] == 'And'):
-                    q = q & qi
-                elif (infoDecOpBetwEncoded[cd-1] == 'Or'):
-                    q = q | qi
+                if (infoDecOpBetwEncoded[cd] == 'And'):
+                    q2 = InfluencingFactor.objects.filter(qi).values(
+                        'ProductId_id').distinct()  # get the current query result depending on the current previous condition
+                    qdecimal = qdecimal.filter(ProductId_id__in=q2)  # save the final query result of decimal list
+                    # q = q & qi
+                elif (infoDecOpBetwEncoded[cd] == 'Or'):
+                    q2 = InfluencingFactor.objects.filter(qi).values('ProductId_id').distinct()
+                    qdecimal = qdecimal | q2
+                    # q = q | qi
             else:
-                q= q & qi
+                qdecimal = InfluencingFactor.objects.filter(qi).values('ProductId_id').distinct()
+                # q= q & qi
 
             cd = cd + 1
 
-        infodecobject = InfluencingFactor.objects.filter(q)
+        # create the query result of the string list
+        # Encode the string lists
+        InfoStrEncoded = [x.encode('UTF8') for x in listinfS] #It includes the string influencing factor names
+        InfoStrValEncoded = [x.encode('UTF8') for x in listinfSV] #It includes the string influencing factor names with its value
+        InfoStrOpEncoded = [x.encode('UTF8') for x in operationS] #It includes the operation between the string value
 
-    # if (infoDecEncoded):
-    #     for i in infoDecEncoded:
-    #         infODecList = InfluencingFactor.objects.filter(Name=i)
-    #         for infODec in infODecList:
-    #             print(infoDecValue1Encoded[cd])
-    #             print(infODec.Value)
-    #             if (infoDecOpVal1wEncoded[cd] == 'lessThan'):
-    #                 if (infoDecOpVal2wEncoded[cd] == 'lessThan'):
-    #                     if (infODec.Value < infoDecValue1Encoded[cd] and infODec.Value < infoDecValue2Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'lessThanEqual'):
-    #                     if (infODec.Value < infoDecValue1Encoded[cd] and infODec.Value <= infoDecValue2Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greater'):
-    #                     if (infODec.Value < infoDecValue1Encoded[cd] and infODec.Value > infoDecValue2Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greaterThanEqual'):
-    #                     if (infODec.Value < infoDecValue1Encoded[cd] and infODec.Value >= infoDecValue2Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'Equal'):
-    #                     if (infODec.Value < infoDecValue1Encoded[cd] and infODec.Value == infoDecValue2Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 else:
-    #                     if (infODec.Value < infoDecValue1Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #             elif (infoDecOpVal1wEncoded[cd] == 'lessThanEqual'):
-    #                 if (infoDecOpVal2wEncoded[cd] == 'lessThan'):
-    #                     if (infODec.Value <= infoDecValue1Encoded[cd] and infODec.Value < infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'lessThanEqual'):
-    #                     if (infODec.Value <= infoDecValue1Encoded[cd] and infODec.Value <= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greater'):
-    #                     if (infODec.Value <= infoDecValue1Encoded[cd] and infODec.Value > infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greaterThanEqual'):
-    #                     if (infODec.Value <= infoDecValue1Encoded[cd] and infODec.Value >= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'Equal'):
-    #                     if (infODec.Value <= infoDecValue1Encoded[cd] and infODec.Value == infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 else:
-    #                     if (infODec.Value <= infoDecValue1Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #             elif (infoDecOpVal1wEncoded[cd] == 'greater'):
-    #                 if (infoDecOpVal2wEncoded[cd] == 'lessThan'):
-    #                     if (infODec.Value > infoDecValue1Encoded[cd] and infODec.Value < infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'lessThanEqual'):
-    #                     if (infODec.Value > infoDecValue1Encoded[cd] and infODec.Value <= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greater'):
-    #                     if (infODec.Value > infoDecValue1Encoded[cd] and infODec.Value > infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greaterThanEqual'):
-    #                     if (infODec.Value > infoDecValue1Encoded[cd] and infODec.Value >= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'Equal'):
-    #                     if (infODec.Value > infoDecValue1Encoded[cd] and infODec.Value == infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 else:
-    #                     if (infODec.Value > infoDecValue1Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #             elif (infoDecOpVal1wEncoded[cd] == 'greaterThanEqual'):
-    #                 if (infoDecOpVal2wEncoded[cd] == 'lessThan'):
-    #                     if (infODec.Value >= infoDecValue1Encoded[cd] and infODec.Value < infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'lessThanEqual'):
-    #                     if (infODec.Value >= infoDecValue1Encoded[cd] and infODec.Value <= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greater'):
-    #                     if (infODec.Value >= infoDecValue1Encoded[cd] and infODec.Value > infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greaterThanEqual'):
-    #                     if (infODec.Value >= infoDecValue1Encoded[cd] and infODec.Value >= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'Equal'):
-    #                     if (infODec.Value >= infoDecValue1Encoded[cd] and infODec.Value == infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 else:
-    #                     if (infODec.Value >= infoDecValue1Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #             elif (infoDecOpVal1wEncoded[cd] == 'Equal'):
-    #                 if (infoDecOpVal2wEncoded[cd] == 'lessThan'):
-    #                     if (infODec.Value == infoDecValue1Encoded[cd] and infODec.Value < infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'lessThanEqual'):
-    #                     if (infODec.Value == infoDecValue1Encoded[cd] and infODec.Value <= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greater'):
-    #                     if (infODec.Value == infoDecValue1Encoded[cd] and infODec.Value > infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'greaterThanEqual'):
-    #                     if (infODec.Value == infoDecValue1Encoded[cd] and infODec.Value >= infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 elif (infoDecOpVal2wEncoded[cd] == 'Equal'):
-    #                     if (infODec.Value == infoDecValue1Encoded[cd] and infODec.Value == infoDecValue1Encoded[
-    #                         cd]):
-    #                         InfDecListID.append(infODec.id)
-    #                 else:
-    #                     if (infODec.Value == infoDecValue1Encoded[cd]):
-    #                         InfDecListID.append(infODec.id)
-    #         cd = cd + 1;
-    #         infDecListCID.append(infODecList.count())
+        qString = Q()
+        cs = 0 ;
 
+        #two loops to link the name of the string with its values and filter the influencing factor table.
+        for name in InfoStrEncoded:
+            qName = Q(Name=name) #build the filter criteria of the query by sitting the name first of all
+            StrValue = []
+            for s in InfoStrValEncoded: #checks all the value of the string name and append it is vale to list
+                if (name == s.split(':')[1]):
+                    StrValue.append(s.split(':')[0])
+            #filter the value accroding to string Name and the list of the value for this name
+            qStringInside = InfluencingFactor.objects.filter(qName, Value__in=StrValue).values('ProductId_id').distinct()
 
-            # save batch details with influencing factor to batchinfluencingFactortable
+            #combine the string list values and filter the data according to that
+            if(cs > 0):
+                if(InfoStrOpEncoded[cs]=='And'):
+                     qString = qString.filter(ProductId_id__in=qStringInside)
+                else:
+                    qString = qString | qStringInside
+            else:
+                qString = qStringInside #if the string list include only one item or first time intialization
+            cs= cs +1 #to access the correct index of the operation between strings list
+
+        #create the result of the date list
+        #encode the date lists
+        InfoValDate1Encoded = [x.encode('UTF8') for x in listdate1]
+        InfoValDate2Encoded = [x.encode('UTF8') for x in listdate2]
+        InfoDateEncoded = [x.encode('UTF8') for x in listinfDa]
+
+        InfoDateOpEncoded = [x.encode('UTF8') for x in operationDate]
+
+    # save batch details with influencing factor to batchinfluencingFactortable
 
 
     infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
