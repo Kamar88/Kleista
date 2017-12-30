@@ -137,7 +137,12 @@ $(document).ready(function() {
     $('.js-example-basic-single').select2();
    // $('.input-daterange').datepicker({
 //});
-      $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    //display the datetimepicker and assign the selected date to the input field on change or on update
+      $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'}).on('dp.change dp.update', function () {
+          $(".form_datetime").find("input").eq(2).attr("value",$(".form_datetime").data("DateTimePicker").date())
+
+    });
+
 
 });
 
@@ -159,6 +164,7 @@ function duplicate(t, e, event) {
      clone.id = "duplicaterD" + ++id;
      cloneOp.id = "s" + clone.id ;
      cloneOp.hidden = false ;
+     $(clone).find("input:text").val("");
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
     $(cloneOp).insertBefore("#" + $(clone).attr('id'));
@@ -172,22 +178,25 @@ function duplicate(t, e, event) {
      cloneOp.id = "s" + clone.id ;
      cloneOp.hidden = false ;
      ++countinfS ;
-     var childOption = clone.getElementsByTagName('Select') ;
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
+    $(clone).find("select").attr("id", countinfS) ;
+
     $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
     if(t == "after-add-more-DT"){
         var operation = document.getElementById('AndOrFDa');
      var cloneOp = operation.cloneNode(true);
         var originalS = document.getElementById('duplicaterDT');
      var clone = originalS.cloneNode(true); // "deep" clone
+        $(clone).find("input:text").val("");
      clone.id = "duplicaterDT" + ++is;
       cloneOp.id = "s" + clone.id ;
      cloneOp.hidden = false ;
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
     $(cloneOp).insertBefore("#" + $(clone).attr('id'));
-    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+    $(".form_datetime").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii'});
     }
 }
 
@@ -214,10 +223,10 @@ $(function () {
 
     });
 
-function OnChangeIS(e){
+function OnChangeIS(e,event){
         var val = $(e).val();
         var idn = $(e).attr("id") ;
-        var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
+        var sub = document.getElementsByClassName("InfluencingFactorV")[idn];
         for (var i=0; i<sub.length; i++){
             if(sub.options[i].id == val && sub.options[i].value !== '')
                 sub.options[i].hidden = false ;
@@ -226,6 +235,7 @@ function OnChangeIS(e){
         }
 
 }
+
 
 
 

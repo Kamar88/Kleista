@@ -272,6 +272,26 @@ def batch(request):
 
         InfoDateOpEncoded = [x.encode('UTF8') for x in operationDate]
 
+        cda= 0;
+        for date in InfoDateEncoded :
+            qn = Q(Name=date)
+            qSD = InfoValDate1Encoded[cda]
+            qED = InfoValDate2Encoded[cda]
+            if(qSD and qED) :
+                qDateInside = InfluencingFactor.objects.filter(qn, Value__range=(qSD, qED)).values('ProductId_id').distinct()
+            else :
+                qDateInside =  InfluencingFactor.objects.filter(qn,Value=qSD).values('ProductId_id').distinct()
+            if (cda > 0):
+                if (InfoStrOpEncoded[cda] == 'And'):
+                    qDate = qDate.filter(ProductId_id__in=qDateInside)
+                else:
+                    qDate = qDate | qDateInside
+            else:
+                qDate = qDateInside  # if the string list include only one item or first time intialization
+                cda = cda + 1  # to access the c
+
+
+
     # save batch details with influencing factor to batchinfluencingFactortable
 
 
