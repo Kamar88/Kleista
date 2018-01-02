@@ -16,11 +16,19 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('BatchName', models.CharField(max_length=50)),
-                ('BatchDescription', models.CharField(max_length=250)),
+                ('BatchDescription', models.CharField(max_length=200)),
             ],
         ),
         migrations.CreateModel(
-            name='BatchInfluencingFactor',
+            name='BatchInfluencingFactorCriteria',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('CreationDate', models.DateTimeField(default=django.utils.timezone.now)),
+                ('BatchId', models.ForeignKey(to='KleiSta.Batch')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='BatchProduct',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('CreationDate', models.DateTimeField(default=django.utils.timezone.now)),
@@ -53,19 +61,16 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Person',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('first_name', models.CharField(max_length=30)),
-                ('last_name', models.CharField(max_length=30)),
-            ],
-        ),
-        migrations.CreateModel(
             name='Product',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('Name', models.CharField(max_length=50)),
-                ('ImportDate', models.DateTimeField(default=django.utils.timezone.now)),
+                ('ExportDate', models.DateTimeField(default=b'2017-12-30 23:54')),
+                ('ImportDate', models.DateTimeField(default=b'2017-12-30 23:54')),
+                ('LSL', models.DecimalField(default=0.0, max_digits=10, decimal_places=2)),
+                ('USL', models.DecimalField(default=0.0, max_digits=10, decimal_places=2)),
+                ('SampleNum', models.IntegerField()),
+                ('OrderNum', models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
@@ -73,6 +78,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('Name', models.CharField(max_length=50)),
+                ('Value', models.DecimalField(default=0.0, max_digits=10, decimal_places=2)),
                 ('ProductId', models.ForeignKey(to='KleiSta.Product')),
             ],
         ),
@@ -82,8 +88,8 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='KleiSta.Product'),
         ),
         migrations.AddField(
-            model_name='batchinfluencingfactor',
-            name='InflId',
-            field=models.ForeignKey(to='KleiSta.InfluencingFactor'),
+            model_name='batchproduct',
+            name='ProductId',
+            field=models.ForeignKey(to='KleiSta.Product'),
         ),
     ]

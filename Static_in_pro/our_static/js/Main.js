@@ -139,9 +139,10 @@ $(document).ready(function() {
 //});
     //display the datetimepicker and assign the selected date to the input field on change or on update
       $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'}).on('dp.change dp.update', function () {
-          $(".form_datetime").find("input").eq(2).attr("value",$(".form_datetime").data("DateTimePicker").date())
+          $(".form_datetime").find("input").eq(1).attr("value",$(".form_datetime").data("DateTimePicker").date())
 
     });
+
 
 
 });
@@ -173,7 +174,7 @@ function duplicate(t, e, event) {
      var operation = document.getElementById('AndOrFS');
      var cloneOp = operation.cloneNode(true);
      var originalS = document.getElementById('duplicaterS');
-     var clone = originalS.cloneNode(true); // "deep" clone
+     var clone = originalS.cloneNode(true); // "deep" clon
      clone.id = "duplicaterS" + ++is;
      cloneOp.id = "s" + clone.id ;
      cloneOp.hidden = false ;
@@ -181,7 +182,6 @@ function duplicate(t, e, event) {
     // or clone.id = ""; if the divs don't need an ID
     $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
     $(clone).find("select").attr("id", countinfS) ;
-
     $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
     if(t == "after-add-more-DT"){
         var operation = document.getElementById('AndOrFDa');
@@ -236,6 +236,18 @@ function OnChangeIS(e,event){
 
 }
 
+
+function ClearRelatedTextBox(e,d)
+{
+    if(d=="Date1"){
+       $(e).parent().find('input.Date1').attr('value','');
+
+    }
+    else
+        $(e).parent().find('input.Date2').attr('value','');
+
+     //document.getElementById('dtp_input1').value = "";
+}
 
 
 

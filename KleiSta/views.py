@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import xlrd, os
-from models import Product, InfluencingFactor, QualityFeature, Group, Batch, BatchInfluencingFactor, GroupBatches
+from models import Product, InfluencingFactor, QualityFeature, Group, Batch, BatchProduct, GroupBatches
 import datetime
 from decimal import *
 from django.db.models import Q

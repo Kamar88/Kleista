@@ -11,15 +11,15 @@ class Product(models.Model):
         default=now.strftime("%Y-%m-%d %H:%M"))
     ImportDate = models.DateTimeField(
         default=now.strftime("%Y-%m-%d %H:%M"))
-    LSL = models.DecimalField(max_digits=10, decimal_places=4,default=0.0)
-    USL = models.DecimalField(max_digits=10, decimal_places=4,default=0.0)
+    LSL = models.DecimalField(max_digits=10, decimal_places=2,default=0.0)
+    USL = models.DecimalField(max_digits=10, decimal_places=2,default=0.0)
     SampleNum = models.IntegerField()
     OrderNum = models.IntegerField()  # to save the order of the data in the excel sheet in case exportDate is not available
 
 
 class QualityFeature(models.Model):
     Name = models.CharField(max_length=50)
-    Value = models.DecimalField(max_digits=10, decimal_places=4,default=0.0)
+    Value = models.DecimalField(max_digits=10, decimal_places=2,default=0.0)
     ProductId = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 

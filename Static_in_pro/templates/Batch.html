@@ -92,15 +92,15 @@
                                 <input type="text" class="form-control" id="DecimalValueInf2" name="DecimalValueInf2">
                             </div>
                             <div class="col-lg-1">
-                                <button class="btn btn-primary btn-circle circle"
+                                <button class="btn btn-primary"
                                         onclick="duplicate('after-add-more-DF',this,event)" type="button"><i
-                                        class="glyphicon glyphicon-plus-sign">+</i></button>
+                                        class="glyphicon glyphicon-plus-sign"></i></button>
                             </div>
                             <div class="col-lg-1">
-                                <button class="btn btn-primary btn-circle circle"
+                                <button class="btn btn-primary"
                                         onclick="onClickremove('after-add-more-DF',this,event)"
                                         type="button"><i
-                                        class="glyphicon glyphicon-minus-sign"></i>-
+                                        class="glyphicon glyphicon-minus-sign"></i>
                                 </button>
 
                             </div>
@@ -148,15 +148,15 @@
                                 </select>
                             </div>
                             <div class="col-lg-1">
-                                <button class="btn btn-primary btn-circle circle"
+                                <button class="btn btn-primary"
                                         onclick="duplicate('after-add-more-S',this,event)" type="button"><i
-                                        class="glyphicon glyphicon-plus-sign">+</i></button>
+                                        class="glyphicon glyphicon-plus-sign"></i></button>
                             </div>
                             <div class="col-lg-1">
-                                <button class="btn btn-primary btn-circle circle"
+                                <button class="btn btn-primary"
                                         onclick="onClickremove('after-add-more-S',this,event)"
                                         type="button"><i
-                                        class="glyphicon glyphicon-minus-sign"></i>-
+                                        class="glyphicon glyphicon-minus-sign"></i>
                                 </button>
 
                             </div>
@@ -181,7 +181,7 @@
 
 
                         <div class="row" style=" padding-left: 25px;">
-                            <div class="form-group col-lg-4" id="Infdiv">
+                            <div class="form-group col-lg-3" id="Infdiv">
 
                                 <select class="form-control" data-style="btn-primary"
                                         id="InfluencingFactordt" name="InfDa">
@@ -191,31 +191,41 @@
                                     {% endfor %}
                                 </select>
                             </div>
-
+                              <div class="form-group col-lg-1">
+                                <select class="form-control selectpicker" data-style="btn-primary" name="OprBetween1"
+                                        id="OperationDate1">
+                                    <option selected value></option>
+                                    <option value="lessThan"><</option>
+                                    <option value="lessThanEqual"><=</option>
+                                    <option value="greater">></option>
+                                    <option value="greaterThanEqual">>=</option>
+                                    <option value="Equal">==</option>
+                                </select>
+                            </div>
                             <div class="col-lg-3">
-                                <div class="input-group date form_datetime">
-                                    <input type="text"  class="form-control" value="" >
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"><i class="fa fa-calendar" aria-hidden="true"></i></span></span>
-                                <input type="hidden" name="Date1"  id="dtp_input1" value="" /><br/>
+                                <div class="input-group date form_datetime dateS">
+                                    <input type="text"   class="form-control" value=""  oninput="ClearRelatedTextBox(this,'Date1')" >
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                <input type="hidden" class="Date1" name="Date1"  id="dtp_input1" value="" /><br/>
                                 </div>
                             </div>
                         <div class="col-lg-3">
-                                <div class="input-group date form_datetime" >
-                                    <input type="text" class="form-control">
-                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"><i class="fa fa-calendar" aria-hidden="true"></i></span></span>
-                                    <input type="hidden" name="Date2"  id="dtp_input2" value="" /><br/>
+                                <div class="input-group date form_datetime dateS" >
+                                    <input type="text" class="form-control" oninput="ClearRelatedTextBox(this,'Date2')">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                    <input type="hidden" class="Date2" name="Date2"  id="dtp_input2" value="" /><br/>
                                 </div>
                             </div>
                             <div class="col-lg-1">
-                                <button class="btn btn-primary btn-circle circle pull-right"
+                                <button class="btn btn-primary"
                                         onclick="duplicate('after-add-more-DT',this,event)" type="button"><i
-                                        class="glyphicon glyphicon-plus-sign">+</i></button>
+                                        class="glyphicon glyphicon-plus-sign"></i></button>
                             </div>
                             <div class="col-lg-1">
-                                <button class="btn btn-primary btn-circle circle"
+                                <button class="btn btn-primary"
                                         onclick="onClickremove('after-add-more-DT',this,event)"
                                         type="button"><i
-                                        class="glyphicon glyphicon-minus-sign"></i>-
+                                        class="glyphicon glyphicon-minus-sign"></i>
                                 </button>
 
                             </div>
