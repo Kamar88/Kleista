@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 import xlrd, os
-from models import Product, InfluencingFactor, QualityFeature, Group, Batch, BatchProduct, GroupBatches
+from models import Product, InfluencingFactor, QualityFeature, Group, Batch, BatchProduct, GroupBatches, BatchInfluencingFactorCriteria
 import datetime
 from decimal import *
 from django.db.models import Q
@@ -15,7 +15,7 @@ def home(request):
         QualityFeature.objects.all().delete()
         Group.objects.all().delete()
         Batch.objects.all().delete()
-        BatchInfluencingFactor.objects.all().delete()
+        BatchProduct.objects.all().delete()
         GroupBatches.objects.all().delete()
     elif (request.method == 'POST' and 'DataTable' in request.POST) or (
                     request.method == 'POST' and 'SubmitList' in request.POST):
@@ -26,7 +26,7 @@ def home(request):
             QualityFeature.objects.all().delete()
             Group.objects.all().delete()
             Batch.objects.all().delete()
-            BatchInfluencingFactor.objects.all().delete()
+            BatchProduct.objects.all().delete()
             GroupBatches.objects.all().delete()
         if request.method == 'POST' and 'DataTable' in request.POST:
             myfile = request.FILES['DataTableF']
@@ -144,7 +144,7 @@ def home(request):
 
 
 def batch(request):
-    if request.method == 'POST' and 'Submit' in request.POST:
+    if request.method == 'POST' and 'SubmitBatchDetail' in request.POST:
         # BatchInformation
         BatchN = request.POST.get('BatchName')
         BatchD = request.POST.get('BatchDescription')
@@ -163,7 +163,7 @@ def batch(request):
         listdate1 = request.POST.getlist('Date1')  # retrive all the date1 list value from the batch page
         listdate2 = request.POST.getlist('Date2')  # retrive all the date2 list value from the batch page
         operationDate = request.POST.getlist('OperationDat')  # retrive the operation between the date values
-
+        OperationDate1 = request.POST.getlist('OperationDate1')
         # StringList retriving
         listinfS = request.POST.getlist('InfS')  # retrive all the string lists from the batch page
         listinfSV = request.POST.getlist(
@@ -173,10 +173,7 @@ def batch(request):
         operationDeS = request.POST.getlist('OperationDecString') #get the operation between decimal Lists and String Lists
         operationSD = request.POST.getlist('OperationStringDate') #get the operation between String Lists and date list 
 
-        # save Batch details to database
-        batch = Batch()
-        batch.BatchName = BatchN
-        batch.BatchDescription = BatchD
+
 
         # convert the decimal influencing factor from unicode to normal string
         infoDecEncoded = [x.encode('UTF8') for x in listinfDe]
@@ -269,20 +266,37 @@ def batch(request):
         InfoValDate1Encoded = [x.encode('UTF8') for x in listdate1]
         InfoValDate2Encoded = [x.encode('UTF8') for x in listdate2]
         InfoDateEncoded = [x.encode('UTF8') for x in listinfDa]
-
         InfoDateOpEncoded = [x.encode('UTF8') for x in operationDate]
+        InfoDate1OpEncoded = [x.encode('UTF8') for x in OperationDate1]
 
         cda= 0;
+        qDateInside = Q()
         for date in InfoDateEncoded :
             qn = Q(Name=date)
             qSD = InfoValDate1Encoded[cda]
             qED = InfoValDate2Encoded[cda]
-            if(qSD and qED) :
+            if(qSD and qED):
                 qDateInside = InfluencingFactor.objects.filter(qn, Value__range=(qSD, qED)).values('ProductId_id').distinct()
-            else :
-                qDateInside =  InfluencingFactor.objects.filter(qn,Value=qSD).values('ProductId_id').distinct()
+            elif qSD:
+                if (InfoDate1OpEncoded[cda] == 'lessThan'):
+                    qv1 = Q(Value__lt=(InfoValDate1Encoded[cd]))
+                    qDateInside = InfluencingFactor.objects.filter(qn & qv1).values('ProductId_id').distinct()
+                elif (InfoDate1OpEncoded[cda] == 'lessThanEqual'):
+                    qv1 = Q(Value__lte=(InfoValDate1Encoded[cd]))
+                    qDateInside = InfluencingFactor.objects.filter(qn & qv1).values('ProductId_id').distinct()
+                elif (InfoDate1OpEncoded[cda] == 'greater'):
+                    qv1 = Q(Value__gt=(InfoValDate1Encoded[cd]))
+                    qDateInside = InfluencingFactor.objects.filter(qn & qv1).values('ProductId_id').distinct()
+                elif (InfoDate1OpEncoded[cda] == 'greaterThanEqual'):
+                    qv1 = Q(Value__gte=(InfoValDate1Encoded[cd]))
+                    qDateInside = InfluencingFactor.objects.filter(qn & qv1).values('ProductId_id').distinct()
+                elif (InfoDate1OpEncoded[cda] == 'Equal'):
+                    qv1 = Q(Value=(InfoValDate1Encoded[cda]))
+                    qDateInside =  InfluencingFactor.objects.filter(qn&qv1).values('ProductId_id').distinct()
+                else:
+                    qDateInside =  InfluencingFactor.objects.filter(qn,Value=qSD).values('ProductId_id').distinct()
             if (cda > 0):
-                if (InfoStrOpEncoded[cda] == 'And'):
+                if (InfoDateOpEncoded[cda] == 'And'):
                     qDate = qDate.filter(ProductId_id__in=qDateInside)
                 else:
                     qDate = qDate | qDateInside
@@ -290,18 +304,83 @@ def batch(request):
                 qDate = qDateInside  # if the string list include only one item or first time intialization
                 cda = cda + 1  # to access the c
 
+        OperationDeSEncode = [x.encode('UTF8') for x in operationDeS]
+        operationSDEncode = [x.encode('UTF8') for x in operationSD]
+
+        QBatch= Q()
+        if(OperationDeSEncode[0] == 'Or' and qString ):
+           QBatch = qdecimal | qString
+        else:
+            if(qdecimal and qString):
+                QBatch = qdecimal.filter(ProductId_id__in=qString)
+            elif qdecimal :
+                QBatch = qdecimal
+            else :
+                QBatch = qString
+
+        if (operationSDEncode[0] == 'Or' and qDate):
+            QBatch = QBatch | qDate
+        else:
+            if (QBatch and qDate):
+                QBatch = QBatch.filter(ProductId_id__in=qDate)
+            elif QBatch:
+                QBatch = QBatch
+            else:
+                QBatch = qDate
 
 
-    # save batch details with influencing factor to batchinfluencingFactortable
+
+        QBatchProduct = Product.objects.filter(id__in=QBatch)
+
+        # save Batch details to database
+        batch = Batch()
+        batch.BatchName = BatchN
+        batch.BatchDescription = BatchD
+        batch.save()
 
 
-    infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
-    infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
-    infSV = InfluencingFactor.objects.filter(Type="String").values('Name', 'Value').order_by('Name', 'Value').distinct()
-    infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
+        # save batch details with influencing factor to batchinfluencingFactortable
+        batchCriteria = BatchInfluencingFactorCriteria()
+        batchCriteria.BatchId = batch
+        batchCriteria.DateList = InfoDateEncoded
+        batchCriteria.DateValue1List= InfoValDate1Encoded
+        batchCriteria.DateValue2List= InfoValDate2Encoded
+        batchCriteria.DateOpList= InfoDateOpEncoded
+        batchCriteria.Date1OpList= InfoDate1OpEncoded
+        batchCriteria.StringDateOplist= operationSDEncode
+        batchCriteria.StringList = InfoStrEncoded
+        batchCriteria.StringOpList = InfoStrOpEncoded
+        batchCriteria.StringValueList= InfoStrValEncoded
+        batchCriteria.DecStringOpList = OperationDeSEncode
+        batchCriteria.DecimalList = infoDecEncoded
+        batchCriteria.DecimalOp1List = infoDecOpVal1wEncoded
+        batchCriteria.DecimalOp2List = infoDecOpVal2wEncoded
+        batchCriteria.DecimalVal1List = infoDecValue1Encoded
+        batchCriteria.DecimalVal2List = infoDecValue2Encoded
+        batchCriteria.DecimalBetOp = infoDecOpBetwEncoded
+        batchCriteria.save()
 
-    return render(request, 'Batch.html', {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV})
 
+        #save the batch with the product that belong to it
+        for p in QBatchProduct :
+            batchProduct= BatchProduct()
+            batchProduct.BatchId = batch
+            batchProduct.ProductId = p
+            batchProduct.save()
+
+        infVList = InfluencingFactor.objects.filter(ProductId__in=QBatchProduct.values('id').distinct())
+        return render(request, 'CreatedBatchDetails.html', {'QBatchProduct': QBatchProduct.distinct(), 'batch': batch, 'infVLisL':infVList })
+    else :
+
+        infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
+        infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
+        infSV = InfluencingFactor.objects.filter(Type="String").values('Name', 'Value').order_by('Name', 'Value').distinct()
+        infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
+
+        return render(request, 'Batch.html', {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV})
+
+def CreatedBatchDetails(request):
+    return render(request, "CreatedBatchDetails.html", {})
 
 def group(request):
     return render(request, "group.html", {})

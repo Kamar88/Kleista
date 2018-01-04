@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', 'KleiSta.views.home', name='home'),
     url(r'^batch/$', 'KleiSta.views.batch', name='batch'),
     url(r'^group/$', 'KleiSta.views.group', name='group'),
+    url(r'^CreatedBatchDetails/$', 'KleiSta.views.CreatedBatchDetails', name='CreatedBatchDetails'),
     url(r'^visualization/$', 'KleiSta.views.visualization', name='visualization'),
     url(r'^admin/', include(admin.site.urls)),
 ]

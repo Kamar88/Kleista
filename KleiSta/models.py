@@ -44,21 +44,24 @@ class BatchProduct(models.Model):
 
 class BatchInfluencingFactorCriteria(models.Model):
     BatchId = models.ForeignKey(Batch, on_delete=models.CASCADE)
-    DecimalList = models.TextField
-    DecimalOp1List = models.TextField
-    DecimalOp2List = models.TextField
-    DecimalVal1List = models.TextField
-    DecimalVal2List = models.TextField
-    DecStringOpList = models.TextField
-    StringList = models.TextField
-    StringValueList =models.TextField
-    StringOpList = models.TextField
-    StringDateOplist = models.TextField
-    DateList = models.TextField
-    DateValue1List= models.TextField
-    DateValue2List= models.TextField
+    DecimalList = models.TextField()
+    DecimalOp1List = models.TextField()
+    DecimalOp2List = models.TextField()
+    DecimalVal1List = models.TextField()
+    DecimalVal2List = models.TextField()
+    DecimalBetOp = models.TextField()
+    DecStringOpList = models.TextField()
+    StringList = models.TextField()
+    StringValueList =models.TextField()
+    StringOpList = models.TextField()
+    StringDateOplist = models.TextField()
+    DateList = models.TextField()
+    DateValue1List= models.TextField()
+    DateValue2List= models.TextField()
     CreationDate = models.DateTimeField(
         default=timezone.now)
+    DateOpList = models.TextField()
+    Date1OpList= models.TextField()
 
 
 class Group(models.Model):

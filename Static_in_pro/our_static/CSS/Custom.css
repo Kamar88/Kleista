@@ -143,3 +143,12 @@ span#OneItem {
     color: white;
 }
 
+#myTable thead > tr > th.detail,
+#myTable tbody > tr:not(.detail-view) > td:first-of-type {
+  display: none;
+}
+
+#myTable thead > tr > th:nth-child(2),
+#myTable tbody > tr:not(.detail-view) > td:nth-child(2) {
+  border-left: none!important;
+}
