@@ -7,3 +7,9 @@
 .glyphicon-arrow-right:before{content:"\e092";}
 .glyphicon-plus-sign:before{content:"\e081";}
 .glyphicon-minus-sign:before{content:"\e082";}
+.glyphicon-chevron-right:before {content:"\e080";}
+.glyphicon-chevron-left:before {content:"\e079";}
+.glyphicon-list:before {content:"\e056";}
+.glyphicon-forward:before {content:"\e075";}
+.glyphicon-backward:before {content:"\e071";}
+.glyphicon-filter:before {content: "\e138";}

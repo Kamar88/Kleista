@@ -78,147 +78,207 @@ function onClick() {
 }
 
 $(document).on('click', '.btn-add', function (e) {
-        alert('add')
-        e.preventDefault();
+    alert('add')
+    e.preventDefault();
 
-        var controlForm = $('.controls form:first'),
-            currentEntry = $(this).parents('.entry:first'),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+    var controlForm = $('.controls form:first'),
+        currentEntry = $(this).parents('.entry:first'),
+        newEntry = $(currentEntry.clone()).appendTo(controlForm);
 
-        newEntry.find('input').val('');
-        controlForm.find('.entry:not(:last) .btn-add')
-            .removeClass('btn-add').addClass('btn-remove')
-            .removeClass('btn-success').addClass('btn-danger')
-            .html('<span class="glyphicon glyphicon-minus"></span>');
-    }).on('click', '.btn-remove', function (e) {
-        $(this).parents('.entry:first').remove();
+    newEntry.find('input').val('');
+    controlForm.find('.entry:not(:last) .btn-add')
+        .removeClass('btn-add').addClass('btn-remove')
+        .removeClass('btn-success').addClass('btn-danger')
+        .html('<span class="glyphicon glyphicon-minus"></span>');
+}).on('click', '.btn-remove', function (e) {
+    $(this).parents('.entry:first').remove();
 
-        e.preventDefault();
-        return false;
-    });
-var countinfS = 0 ;
+    e.preventDefault();
+    return false;
+});
+var countinfS = 0;
 
 function onClickremove(t, e, event) {
     event.preventDefault();
-    if(t == "after-add-more-DF"){
-    if ($(e).closest('.after-add-more-DF').attr("id") != "duplicaterD") {
-        var ido = $(e).closest('.after-add-more-DF').attr('id');
-        ido = "s" + ido ;
-        var op = document.getElementById(ido);
-        $(op).remove() ;
-        $(e).closest('.after-add-more-DF').remove();
+    if (t == "after-add-more-DF") {
+        if ($(e).closest('.after-add-more-DF').attr("id") != "duplicaterD") {
+            var ido = $(e).closest('.after-add-more-DF').attr('id');
+            ido = "s" + ido;
+            var op = document.getElementById(ido);
+            $(op).remove();
+            $(e).closest('.after-add-more-DF').remove();
 
-    }}
-    if(t == "after-add-more-S"){
-    if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
-        var ido = $(e).closest('.after-add-more-S').attr('id');
-        ido = "s" + ido ;
-        var op = document.getElementById(ido);
-        $(op).remove() ;
-        $(e).closest('.after-add-more-S').remove();
-        --countinfS ;
-    }}
-     if(t == "after-add-more-DT"){
-    if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
-        var ido = $(e).closest('.after-add-more-DT').attr('id');
-        ido = "s" + ido ;
-        var op = document.getElementById(ido);
-        $(op).remove() ;
-        $(e).closest('.after-add-more-DT').remove();
-    }}
+        }
+    }
+    if (t == "after-add-more-S") {
+        if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
+            var ido = $(e).closest('.after-add-more-S').attr('id');
+            ido = "s" + ido;
+            var op = document.getElementById(ido);
+            $(op).remove();
+            $(e).closest('.after-add-more-S').remove();
+            --countinfS;
+        }
+    }
+    if (t == "after-add-more-DT") {
+        if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
+            var ido = $(e).closest('.after-add-more-DT').attr('id');
+            ido = "s" + ido;
+            var op = document.getElementById(ido);
+            $(op).remove();
+            $(e).closest('.after-add-more-DT').remove();
+        }
+    }
 
 
 }
 
 
-
-$(document).ready(function() {
+$(document).ready(function () {
     $('.js-example-basic-multiple').select2();
     $('.js-example-basic-single').select2();
-   // $('.input-daterange').datepicker({
+    // $('.input-daterange').datepicker({
 //});
     //display the datetimepicker and assign the selected date to the input field on change or on update
-      $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'}).on('dp.change dp.update', function () {
-          $(".form_datetime").find("input").eq(1).attr("value",$(".form_datetime").data("DateTimePicker").date())
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'}).on('dp.change dp.update', function () {
+        $(".form_datetime").find("input").eq(1).attr("value", $(".form_datetime").data("DateTimePicker").date())
 
     });
 
+    $('#InfCheckBox').change(function () {
+        $('#InfluncingFactorDetails').toggle();
+    });
+    $('#InfCheckBox').on('click', function () {
+        $(this).val(this.checked ? 1 : 0);
 
-      var $table = $('#myTable');
+    });
 
-$table.on('expand-row.bs.table', function(e, index, row, $detail) {
-  var res = $("#desc" + index).html();
-  $detail.html(res);
+    $('#search').multiselect({
+        search: {
+            left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+            right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+        },
+        fireSearch: function (value) {
+            return value.length > 3;
+        }
+    });
+
+    var $table = $('#myTable');
+
+    $table.on('expand-row.bs.table', function (e, index, row, $detail) {
+        var res = $("#desc" + index).html();
+        $detail.html(res);
+    });
+
+    $table.on("click-row.bs.table", function (e, row, $tr) {
+
+        // prints Clicked on: table table-hover, no matter if you click on row or detail-icon
+        console.log("Clicked on: " + $(e.target).attr('class'), [e, row, $tr]);
+
+        // In my real scenarion, trigger expands row with text detailFormatter..
+        //$tr.find(">td>.detail-icon").trigger("click");
+        // $tr.find(">td>.detail-icon").triggerHandler("click");
+        if ($tr.next().is('tr.detail-view')) {
+            $table.bootstrapTable('collapseRow', $tr.data('index'));
+        } else {
+            $table.bootstrapTable('expandRow', $tr.data('index'));
+        }
+    });
+
+    $('.filterable .btn-filter').click(function(){
+        var $panel = $(this).parents('.filterable'),
+        $filters = $panel.find('.filters input'),
+        $tbody = $panel.find('.table tbody');
+        if ($filters.prop('disabled') == true) {
+            $filters.prop('disabled', false);
+            $filters.first().focus();
+        } else {
+            $filters.val('').prop('disabled', true);
+            $tbody.find('.no-result').remove();
+            $tbody.find('tr').show();
+        }
+    });
+
+    $('.filterable .filters input').keyup(function(e){
+        /* Ignore tab key */
+        var code = e.keyCode || e.which;
+        if (code == '9') return;
+        /* Useful DOM data and selectors */
+        var $input = $(this),
+        inputContent = $input.val().toLowerCase(),
+        $panel = $input.parents('.filterable'),
+        column = $panel.find('.filters th').index($input.parents('th')),
+        $table = $panel.find('.table'),
+        $rows = $table.find('tbody tr');
+        /* Dirtiest filter function ever ;) */
+        var $filteredRows = $rows.filter(function(){
+            var value = $(this).find('td').eq(column).text().toLowerCase();
+            return value.indexOf(inputContent) === -1;
+        });
+        /* Clean previous no-result if exist */
+        $table.find('tbody .no-result').remove();
+        /* Show all rows, hide filtered ones (never do that outside of a demo ! xD) */
+        $rows.show();
+        $filteredRows.hide();
+        /* Prepend no-result row if all rows are filtered */
+        if ($filteredRows.length === $rows.length) {
+            $table.find('tbody').prepend($('<tr class="no-result text-center"><td colspan="'+ $table.find('.filters th').length +'">No result found</td></tr>'));
+        }
+    });
+
+
 });
 
-$table.on("click-row.bs.table", function(e, row, $tr) {
 
-  // prints Clicked on: table table-hover, no matter if you click on row or detail-icon
-  console.log("Clicked on: " + $(e.target).attr('class'), [e, row, $tr]);
-
-  // In my real scenarion, trigger expands row with text detailFormatter..
-  //$tr.find(">td>.detail-icon").trigger("click");
-  // $tr.find(">td>.detail-icon").triggerHandler("click");
-  if ($tr.next().is('tr.detail-view')) {
-    $table.bootstrapTable('collapseRow', $tr.data('index'));
-  } else {
-    $table.bootstrapTable('expandRow', $tr.data('index'));
-  }
-});
-
-
-});
-
-
-
-var id = 0, is=0, idt=0;
+var id = 0, is = 0, idt = 0;
 var original = document.getElementById('duplicater');
-
 
 
 function duplicate(t, e, event) {
     event.preventDefault();
 
- if(t == "after-add-more-DF"){
-     var operation = document.getElementById('AndOrFDF');
-     var cloneOp = operation.cloneNode(true);
-     var original = document.getElementById('duplicaterD');
-     var clone = original.cloneNode(true); // "deep" clone
-     clone.id = "duplicaterD" + ++id;
-     cloneOp.id = "s" + clone.id ;
-     cloneOp.hidden = false ;
-     $(clone).find("input:text").val("");
-    // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
-    $(cloneOp).insertBefore("#" + $(clone).attr('id'));
- }
-    if(t == "after-add-more-S"){
-     var operation = document.getElementById('AndOrFS');
-     var cloneOp = operation.cloneNode(true);
-     var originalS = document.getElementById('duplicaterS');
-     var clone = originalS.cloneNode(true); // "deep" clon
-     clone.id = "duplicaterS" + ++is;
-     cloneOp.id = "s" + clone.id ;
-     cloneOp.hidden = false ;
-     ++countinfS ;
-    // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
-    $(clone).find("select").attr("id", countinfS) ;
-    $(cloneOp).insertBefore("#" + $(clone).attr('id'));}
-    if(t == "after-add-more-DT"){
-        var operation = document.getElementById('AndOrFDa');
-     var cloneOp = operation.cloneNode(true);
-        var originalS = document.getElementById('duplicaterDT');
-     var clone = originalS.cloneNode(true); // "deep" clone
+    if (t == "after-add-more-DF") {
+        var operation = document.getElementById('AndOrFDF');
+        var cloneOp = operation.cloneNode(true);
+        var original = document.getElementById('duplicaterD');
+        var clone = original.cloneNode(true); // "deep" clone
+        clone.id = "duplicaterD" + ++id;
+        cloneOp.id = "s" + clone.id;
+        cloneOp.hidden = false;
         $(clone).find("input:text").val("");
-     clone.id = "duplicaterDT" + ++is;
-      cloneOp.id = "s" + clone.id ;
-     cloneOp.hidden = false ;
-    // or clone.id = ""; if the divs don't need an ID
-    $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
-    $(cloneOp).insertBefore("#" + $(clone).attr('id'));
-    $(".form_datetime").datetimepicker({
-        format: 'yyyy-mm-dd hh:ii'});
+        // or clone.id = ""; if the divs don't need an ID
+        $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
+        $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+    }
+    if (t == "after-add-more-S") {
+        var operation = document.getElementById('AndOrFS');
+        var cloneOp = operation.cloneNode(true);
+        var originalS = document.getElementById('duplicaterS');
+        var clone = originalS.cloneNode(true); // "deep" clon
+        clone.id = "duplicaterS" + ++is;
+        cloneOp.id = "s" + clone.id;
+        cloneOp.hidden = false;
+        ++countinfS;
+        // or clone.id = ""; if the divs don't need an ID
+        $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
+        $(clone).find("select").attr("id", countinfS);
+        $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+    }
+    if (t == "after-add-more-DT") {
+        var operation = document.getElementById('AndOrFDa');
+        var cloneOp = operation.cloneNode(true);
+        var originalS = document.getElementById('duplicaterDT');
+        var clone = originalS.cloneNode(true); // "deep" clone
+        $(clone).find("input:text").val("");
+        clone.id = "duplicaterDT" + ++is;
+        cloneOp.id = "s" + clone.id;
+        cloneOp.hidden = false;
+        // or clone.id = ""; if the divs don't need an ID
+        $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
+        $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+        $(".form_datetime").datetimepicker({
+            format: 'yyyy-mm-dd hh:ii'
+        });
     }
 }
 
@@ -243,34 +303,32 @@ $(function () {
         return false;
     });
 
-    });
+});
 
-function OnChangeIS(e,event){
-        var val = $(e).val();
-        var idn = $(e).attr("id") ;
-        var sub = document.getElementsByClassName("InfluencingFactorV")[idn];
-        for (var i=0; i<sub.length; i++){
-            if(sub.options[i].id == val && sub.options[i].value !== '')
-                sub.options[i].hidden = false ;
-            else
-                sub.options[i].hidden = true ;
-        }
+function OnChangeIS(e, event) {
+    var val = $(e).val();
+    var idn = $(e).attr("id");
+    var sub = document.getElementsByClassName("InfluencingFactorV")[idn];
+    for (var i = 0; i < sub.length; i++) {
+        if (sub.options[i].id == val && sub.options[i].value !== '')
+            sub.options[i].hidden = false;
+        else
+            sub.options[i].hidden = true;
+    }
 
 }
 
 
-function ClearRelatedTextBox(e,d)
-{
-    if(d=="Date1"){
-       $(e).parent().find('input.Date1').attr('value','');
+function ClearRelatedTextBox(e, d) {
+    if (d == "Date1") {
+        $(e).parent().find('input.Date1').attr('value', '');
 
     }
     else
-        $(e).parent().find('input.Date2').attr('value','');
+        $(e).parent().find('input.Date2').attr('value', '');
 
-     //document.getElementById('dtp_input1').value = "";
+    //document.getElementById('dtp_input1').value = "";
 }
-
 
 
 //$('#move_INF').click(function() {

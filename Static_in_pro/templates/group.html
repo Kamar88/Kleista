@@ -1,7 +1,336 @@
 {% extends "home.html" %}
-
+{% load static %}
 {% block title %}
     <title>Group Definition</title>
-    {% endblock %}
+{% endblock %}
 {% block content %}
+    <div class="row my-4 card" style="padding: 40px" id="BatchDefinition">
+        <h4>Group Definition</h4>
+        <div class="col-lg-12">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="GroupName">Group Name:</label>
+                    <input type="text" class="form-control" name="GroupName" id="GroupName"
+                           placeholder="Enter Group Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="GroupDescription">Group Description:</label>
+                    <input type="text" class="form-control" name="GroupDescription" id="GroupDescription"
+                           placeholder="Group Description"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="BatchDetail">Select Batches:</label>
+                </div>
+                <div class="form-group card" style="background-color: beige">
+                    <div class="form-group row" id="dual-list-box-batches" style="margin: 20px">
+
+                        <div class="col-lg-5">
+                            <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
+                                {% for b in batches %}
+                                    <option value="{{ b.id }}">{{ b.BatchName }}:{{ b.BatchDescription }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <button type="button" id="search_rightAll" class="btn btn-block"><i
+                                    class="glyphicon glyphicon-forward"></i></button>
+                            <button type="button" id="search_rightSelected" class="btn btn-block"><i
+                                    class="glyphicon glyphicon-chevron-right"></i></button>
+                            <button type="button" id="search_leftSelected" class="btn btn-block"><i
+                                    class="glyphicon glyphicon-chevron-left"></i></button>
+                            <button type="button" id="search_leftAll" class="btn btn-block"><i
+                                    class="glyphicon glyphicon-backward"></i></button>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <select name="SBatches" id="search_to" class="form-control" size="8"
+                                    multiple="multiple"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- check Box for filtering influencing factor -->
+                <div class="checkbox">
+                    <label><input type="checkbox" name="InfCb" id="InfCheckBox" value="0"> Filter More Depending on
+                        Influencing Factors.</label>
+                </div>
+                <!-- Filter Influencing Factors -->
+                <div class="form-group" id="InfluncingFactorDetails" style="display: none">
+                    <div class="row AndOrFDF" id="AndOrFDF" style="padding-left: 25px" hidden>
+                        <div class="form-group col-lg-3" style=" margin-top: 25px;">
+                            <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation"
+                                    name="OperationDec">
+                                <option selected value="And">And</option>
+                                <option value="Or">Or</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row AndOrFDF" id="AndOrFDa" style="padding-left: 25px" hidden>
+                        <div class="form-group col-lg-3" style=" margin-top: 25px;">
+                            <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation"
+                                    name="OperationDat">
+                                <option selected value="And">And</option>
+                                <option value="Or">Or</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row AndOrFDF" id="AndOrFS" style="padding-left: 25px" hidden>
+                        <div class="form-group col-lg-3" style=" margin-top: 25px;">
+                            <select class="form-control btn-info selectpicker" data-style="btn-info" id="Operation"
+                                    name="OperationS">
+                                <option selected value="And">And</option>
+                                <option value="Or">Or</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row card" style="background-color: beige; margin: 2px">
+                        <div class="row" style=" padding-left: 25px;">
+                            <label for="InfluencingFactor">Select <b>Decimal</b> Influencing Factors:</label>
+                        </div>
+                        <div class="after-add-more-DF" id="duplicaterD" style=" padding-left: 25px;">
+                            <div class="row">
+                                <div class="form-group col-lg-4" id="Infdiv">
+                                    <select class="form-control selectpicker"
+                                            data-style="btn-primary" name="InfDe"
+                                            id="InfluencingFactor">
+                                        <option selected value> -- select an option --</option>
+                                        {% for entry in infLD %}
+                                            <option value="{{ entry.Name }}">{{ entry.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-1">
+                                    <select class="form-control selectpicker" data-style="btn-primary"
+                                            name="OprBetween1"
+                                            id="OperationD1">
+                                        <option selected value></option>
+                                        <option value="lessThan"><</option>
+                                        <option value="lessThanEqual"><=</option>
+                                        <option value="greater">></option>
+                                        <option value="greaterThanEqual">>=</option>
+                                        <option value="Equal">==</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" id="DecimalValueInf1"
+                                           name="DecimalValueInf1">
+                                </div>
+                                <div class="form-group col-lg-1">
+                                    <select class="form-control selectpicker" data-style="btn-primary"
+                                            name="OprBetween2"
+                                            id="OperationD1">
+                                        <option selected value></option>
+                                        <option value="lessThan"><</option>
+                                        <option value="lessThanEqual"><=</option>
+                                        <option value="greater">></option>
+                                        <option value="greaterThanEqual">>=</option>
+                                        <option value="Equal">==</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <input type="text" class="form-control" id="DecimalValueInf2"
+                                           name="DecimalValueInf2">
+                                </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary"
+                                            onclick="duplicate('after-add-more-DF',this,event)" type="button"><i
+                                            class="glyphicon glyphicon-plus-sign"></i></button>
+                                </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary"
+                                            onclick="onClickremove('after-add-more-DF',this,event)"
+                                            type="button"><i
+                                            class="glyphicon glyphicon-minus-sign"></i>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row" style=" margin-top: 25px;">
+                        <div class="form-group col-lg-3">
+                            <select class="form-control btn-info selectpicker" data-style="btn-info"
+                                    name="OperationDecString" id="OperationDecString">
+                                <option value="And">And</option>
+                                <option selected value="Or">Or</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row card" style="background-color: beige;margin: 2px">
+                        <div class="row" style=" padding-left: 25px;">
+                            <label for="InfluencingFactor">Select <b>String</b> Influencing Factors:</label>
+                        </div>
+                        <div class="after-add-more-S" id="duplicaterS">
+
+
+                            <div class="row" style=" padding-left: 25px;">
+                                <div class="form-group col-lg-4" id="Infdiv">
+
+                                    <select class="form-control selectpicker" onchange="OnChangeIS(this,event)"
+                                            data-style="btn-primary"
+                                            id="0" name="InfS">
+                                        <option selected value> -- select an option --</option>
+                                        {% for entry in infLS %}
+                                            <option value="{{ entry.Name }}">{{ entry.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-6" id="InfdivValue" name="1">
+
+                                    <select class="form-control selectpicker InfluencingFactorV"
+                                            data-style="btn-primary"
+                                            name="InfluencingFactorSV" id="InfluencingFactorV" multiple>
+                                        {% for entry in infSV %}
+                                            <option value="{{ entry.Value }}:{{ entry.Name }}" id="{{ entry.Name }}"
+                                                    hidden>{{ entry.Value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary"
+                                            onclick="duplicate('after-add-more-S',this,event)" type="button"><i
+                                            class="glyphicon glyphicon-plus-sign"></i></button>
+                                </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary"
+                                            onclick="onClickremove('after-add-more-S',this,event)"
+                                            type="button"><i
+                                            class="glyphicon glyphicon-minus-sign"></i>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-3" style=" margin-top: 25px;">
+                            <select class="form-control btn-info selectpicker" data-style="btn-info"
+                                    name="OperationStringDate" id="OperationStringDate">
+                                <option value="And">And</option>
+                                <option selected value="Or">Or</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row card" style="background-color: beige;margin: 2px"
+                    >
+                        <div class="row" style=" padding-left: 25px;">
+                            <label for="InfluencingFactor">Select <b>Date</b> Influencing Factors:</label>
+                        </div>
+                        <div class="after-add-more-DT" id="duplicaterDT">
+
+
+                            <div class="row" style=" padding-left: 25px;">
+                                <div class="form-group col-lg-3" id="Infdiv">
+
+                                    <select class="form-control" data-style="btn-primary"
+                                            id="InfluencingFactordt" name="InfDa">
+                                        <option selected value> -- select an option --</option>
+                                        {% for entry in infLDT %}
+                                            <option value="{{ entry.Name }}">{{ entry.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col-lg-1">
+                                    <select class="form-control selectpicker" data-style="btn-primary"
+                                            name="OperationDate1"
+                                            id="OperationDate1">
+                                        <option selected value></option>
+                                        <option value="lessThan"><</option>
+                                        <option value="lessThanEqual"><=</option>
+                                        <option value="greater">></option>
+                                        <option value="greaterThanEqual">>=</option>
+                                        <option value="Equal">==</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group date form_datetime dateS">
+                                        <input type="text" class="form-control" value=""
+                                               oninput="ClearRelatedTextBox(this,'Date1')">
+                                        <span class="input-group-addon"><span
+                                                class="glyphicon glyphicon-th"></span></span>
+                                        <input type="hidden" class="Date1" name="Date1" id="dtp_input1" value=""/><br/>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group date form_datetime dateS">
+                                        <input type="text" class="form-control"
+                                               oninput="ClearRelatedTextBox(this,'Date2')">
+                                        <span class="input-group-addon"><span
+                                                class="glyphicon glyphicon-th"></span></span>
+                                        <input type="hidden" class="Date2" name="Date2" id="dtp_input2" value=""/><br/>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary"
+                                            onclick="duplicate('after-add-more-DT',this,event)" type="button"><i
+                                            class="glyphicon glyphicon-plus-sign"></i></button>
+                                </div>
+                                <div class="col-lg-1">
+                                    <button class="btn btn-primary"
+                                            onclick="onClickremove('after-add-more-DT',this,event)"
+                                            type="button"><i
+                                            class="glyphicon glyphicon-minus-sign"></i>
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                <div class="col-lg-12">
+                    <button type="submit" name="SubmitGroupDetail" class="btn btn-primary pull-right"
+                            style="margin-top: 20px">Submit
+                    </button>
+                </div>
+                </div>
+                <div class="col-lg-12" style="margin-top: 5px;">
+                    <h5>Product Details:</h5>
+                </div>
+                <div class="col-lg-12" style="margin-top: 5px;">
+                    <table id="myTable" class="table table-striped col-lg-12" data-toggle="table"
+                           data-detail-view="true"
+                           data-detail-formatter="detailFormatter" style="background-color: white">
+                        <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>#</th>
+                            <th>Product Name</th>
+                            <th>Date</th>
+                            <th>LSL</th>
+                            <th>USL</th>
+                            <th>Batch Name</th>
+                            <th>QFeature Name</th>
+                            <th>QFeature Value</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for product in ProductInBatches %}
+                            <tr>
+                                <td class="vcenter"><input type="checkbox" id="cbSelected" value="0"/></td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ product.ProductId__Name }}</td>
+                                <td>{{ product.ProductId__ExportDate }}</td>
+                                <td>{{ product.ProductId__LSL }}</td>
+                                <td>{{ product.ProductId__USL }}</td>
+                                <td>{{  product.BatchId__BatchName }}</td>
+                                <td>{{  product.ProductId__qualityfeature__Name }}</td>
+                                <td>{{  product.ProductId__qualityfeature__Value }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+        </div>
+    </div>
 {% endblock %}

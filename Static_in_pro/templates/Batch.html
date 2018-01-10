@@ -235,45 +235,46 @@
                     </div>
 
                 </div>
-            <div class="col-lg-12">
-                            <button type="submit" name="SubmitBatchDetail" class="btn btn-primary pull-right" style="margin-top: 20px">Submit
-                </button>
-                        </div>
+                <div class="col-lg-12">
+                    <button type="submit" name="SubmitBatchDetail" class="btn btn-primary pull-right"
+                            style="margin-top: 20px">Submit
+                    </button>
+                </div>
 
             </form>
-            </div>
+        </div>
     </div>
-            <div class="row card" style="margin-top: 20px; background-color: beige" hidden="true" id="DivBatchDetails">
-                <div class="row" style="margin: 5px;">
-                    <div class="col-lg-6" style="margin-top: 5px;">
-                        <h5>Batch Name:</h5> <h6>{{ batch.BatchName }}</h6>
-                    </div>
-                    <div class="col-lg-6" style="margin-top: 5px;">
-                        <h5>Batch Description:</h5> <h6>{{ batch.BatchDescription }}</h6>
-                    </div>
-                </div>
-                <div class="col-lg-12" style="margin-top: 5px;">
-                    <h5>Product Details:</h5>
-                </div>
-                <div class="col-lg-12" style="margin-top: 5px;">
-                    <table id="myTable" class="table table-striped col-lg-12" data-toggle="table"
-                           data-detail-view="true"
-                           data-detail-formatter="detailFormatter" style="background-color: white">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Product Name</th>
-                            <th> Date</th>
-                        </tr>
-                        </thead>
+    <div class="row card" style="margin-top: 20px; background-color: beige" hidden="true" id="DivBatchDetails">
+        <div class="row" style="margin: 5px;">
+            <div class="col-lg-6" style="margin-top: 5px;">
+                <h5>Batch Name:</h5> <h6>{{ batch.BatchName }}</h6>
+            </div>
+            <div class="col-lg-6" style="margin-top: 5px;">
+                <h5>Batch Description:</h5> <h6>{{ batch.BatchDescription }}</h6>
+            </div>
+        </div>
+        <div class="col-lg-12" style="margin-top: 5px;">
+            <h5>Product Details:</h5>
+        </div>
+        <div class="col-lg-12" style="margin-top: 5px;">
+            <table id="myTable" class="table table-striped col-lg-12" data-toggle="table"
+                   data-detail-view="true"
+                   data-detail-formatter="detailFormatter" style="background-color: white">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th> Date</th>
+                </tr>
+                </thead>
 
-                        <tbody>
-                        {% for product in QBatchProduct %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ product.Name }}</td>
-                                <td>{{ product.ExportDate }}</td>
-                                <span class="col-lg-12" style="display: none;" id="desc{{ forloop.counter0 }}">
+                <tbody>
+                {% for product in QBatchProduct %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ product.Name }}</td>
+                        <td>{{ product.ExportDate }}</td>
+                        <span class="col-lg-12" style="display: none;" id="desc{{ forloop.counter0 }}">
 
                                     {% for i in infVLisL %}
                                         {% if i.ProductId_id ==  product.id %}
@@ -286,11 +287,11 @@
 
                                     {% endfor %}
                                 </span>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 {% endblock %}
