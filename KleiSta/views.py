@@ -5,6 +5,7 @@ import xlrd, os
 from models import GroupProduct, Product, InfluencingFactor, QualityFeature, Group, Batch, BatchProduct, GroupBatches, \
     BatchInfluencingFactorCriteria, GroupInfluencingFactorCriteria
 import datetime
+from django.db.models import *
 from decimal import *
 from django.db.models import Q
 
@@ -393,9 +394,10 @@ def group(request):
         group = Group()
         groupN = request.POST.get('GroupName')
         groupD = request.POST.get('GroupDescription')
+        qFeature = request.POST.get('QFeatureS')
         group.GroupName = groupN
         group.GroupDescription = groupD
-        if request.POST.get('InfCb') == 1:
+        if request.POST.get('InfCb') == '1':
             group.ExtraFilter = True;
         else:
             group.ExtraFilter = False;
@@ -404,13 +406,23 @@ def group(request):
         # getBatches that are related to group
         groupBatches = request.POST.getlist('SBatches')
 
-        #retrive the batch with the product that belong to it with the quality features
-        ProductInBatches = BatchProduct.objects.filter(BatchId_id__in=groupBatches)\
-            .values('BatchId__BatchDescription','BatchId__BatchName','BatchId_id',
-                    'ProductId__Name','ProductId__ExportDate','ProductId__LSL','ProductId__USL','ProductId__SampleNum',
+        # retrive the batch with the product that belong to it with the quality features
+        ProductInBatches1 = BatchProduct.objects.filter(BatchId_id__in=groupBatches,
+                                                        ProductId__qualityfeature__Name=qFeature) \
+            .values('BatchId__BatchDescription', 'BatchId__BatchName', 'BatchId_id',
+                    'ProductId__Name', 'ProductId__ExportDate', 'ProductId__LSL', 'ProductId__USL',
+                    'ProductId__SampleNum',
                     'ProductId__OrderNum', 'ProductId__qualityfeature__Name', 'ProductId__qualityfeature__Value',
                     'ProductId__qualityfeature__id')
+        ProductInBatches = BatchProduct.objects.filter(BatchId_id__in=groupBatches,
+                                                       ProductId__qualityfeature__Name=qFeature) \
+            .values('BatchId__BatchDescription', 'BatchId__BatchName', 'BatchId_id',
+                    'ProductId__Name', 'ProductId__ExportDate', 'ProductId__LSL', 'ProductId__USL',
+                    'ProductId__qualityfeature__Name', 'ProductId__qualityfeature__Value','ProductId__qualityfeature__Value')
 
+        ProductInBatchesC = ProductInBatches.values('BatchId_id', 'ProductId__Name').order_by('BatchId_id',
+                                                                                              'ProductId__Name').annotate(
+            total=Count('ProductId__Name'))
 
         # save Batches with their group to database
         for B in groupBatches:
@@ -420,7 +432,7 @@ def group(request):
             groupBatch.save()
 
         # if the group has more filter then get these filter and save the data to group product data
-        if request.POST.get('InfCb') == 1:
+        if request.POST.get('InfCb') == '1':
             # DecimalList retriving
             listinfDe = request.POST.getlist('InfDe')  # retrive all the decimal list names from the batch page
             Decimalval1 = request.POST.getlist(
@@ -607,39 +619,60 @@ def group(request):
                 else:
                     QGroup = qDate
 
-            QGroupProduct = Product.objects.filter(id__in=QGroup)
+            ##QGroupProduct = Product.objects.filter(id__in=QGroup)
 
             # save group details with influencing factor to batchinfluencingFactortable
-            batchCriteria = GroupInfluencingFactorCriteria()
-            batchCriteria.GroupId = group
-            batchCriteria.DateList = InfoDateEncoded
-            batchCriteria.DateValue1List = InfoValDate1Encoded
-            batchCriteria.DateValue2List = InfoValDate2Encoded
-            batchCriteria.DateOpList = InfoDateOpEncoded
-            batchCriteria.Date1OpList = InfoDate1OpEncoded
-            batchCriteria.StringDateOplist = operationSDEncode
-            batchCriteria.StringList = InfoStrEncoded
-            batchCriteria.StringOpList = InfoStrOpEncoded
-            batchCriteria.StringValueList = InfoStrValEncoded
-            batchCriteria.DecStringOpList = OperationDeSEncode
-            batchCriteria.DecimalList = infoDecEncoded
-            batchCriteria.DecimalOp1List = infoDecOpVal1wEncoded
-            batchCriteria.DecimalOp2List = infoDecOpVal2wEncoded
-            batchCriteria.DecimalVal1List = infoDecValue1Encoded
-            batchCriteria.DecimalVal2List = infoDecValue2Encoded
-            batchCriteria.DecimalBetOp = infoDecOpBetwEncoded
-            batchCriteria.save()
+            groupCriteria = GroupInfluencingFactorCriteria()
+            groupCriteria.GroupId = group
+            groupCriteria.DateList = InfoDateEncoded
+            groupCriteria.DateValue1List = InfoValDate1Encoded
+            groupCriteria.DateValue2List = InfoValDate2Encoded
+            groupCriteria.DateOpList = InfoDateOpEncoded
+            groupCriteria.Date1OpList = InfoDate1OpEncoded
+            groupCriteria.StringDateOplist = operationSDEncode
+            groupCriteria.StringList = InfoStrEncoded
+            groupCriteria.StringOpList = InfoStrOpEncoded
+            groupCriteria.StringValueList = InfoStrValEncoded
+            groupCriteria.DecStringOpList = OperationDeSEncode
+            groupCriteria.DecimalList = infoDecEncoded
+            groupCriteria.DecimalOp1List = infoDecOpVal1wEncoded
+            groupCriteria.DecimalOp2List = infoDecOpVal2wEncoded
+            groupCriteria.DecimalVal1List = infoDecValue1Encoded
+            groupCriteria.DecimalVal2List = infoDecValue2Encoded
+            groupCriteria.DecimalBetOp = infoDecOpBetwEncoded
+            groupCriteria.save()
 
-            # save the group with the product that belong to it
-            for p in QGroupProduct:
+            ProductInBatches = BatchProduct.objects.filter(BatchId_id__in=groupBatches,
+                                                           ProductId__qualityfeature__Name=qFeature,
+                                                           ProductId__in=QGroup) \
+                .values('BatchId__BatchDescription', 'BatchId__BatchName', 'BatchId_id',
+                        'ProductId__Name', 'ProductId__ExportDate', 'ProductId__LSL', 'ProductId__USL',
+                        'ProductId__qualityfeature__Name', 'ProductId__qualityfeature__Value', 'ProductId_id')
+
+            ProductInBatchesC = ProductInBatches.values('BatchId_id', 'ProductId__Name').order_by('BatchId_id',
+                                                                                                  'ProductId__Name').annotate(
+                total=Count('ProductId__Name'))
+
+            # save the group with the product and batch that belong to it
+            for p in ProductInBatches:
                 groupProduct = GroupProduct()
                 groupProduct.GroupId = group
-                groupProduct.ProductId = p
+                groupProduct.ProductId_id = p['ProductId_id']
+                groupProduct.BatchId_id = p['BatchId_id']
                 groupProduct.save()
+        else:
+            ProductInBatches = BatchProduct.objects.filter(BatchId_id__in=groupBatches,
+                                                           ProductId__qualityfeature__Name=qFeature) \
+                .values('BatchId__BatchDescription', 'BatchId__BatchName', 'BatchId_id',
+                        'ProductId__Name', 'ProductId__ExportDate', 'ProductId__LSL', 'ProductId__USL',
+                        'ProductId__qualityfeature__Name', 'ProductId__qualityfeature__Value','ProductId_id')
 
-            infVList = InfluencingFactor.objects.filter(ProductId__in=QGroupProduct.values('id').distinct())
+            ProductInBatchesC = ProductInBatches.values('BatchId_id', 'ProductId__Name').order_by('BatchId_id',
+                                                                                                  'ProductId__Name').annotate(
+                total=Count('ProductId__Name'))
 
         # Load Page data
+        QFeature = QualityFeature.objects.values('Name').distinct()
         batches = Batch.objects.values('id', 'BatchName', 'BatchDescription').order_by('BatchName', 'BatchDescription',
                                                                                        'id')
         infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
@@ -648,12 +681,26 @@ def group(request):
                                                                                                  'Value').distinct()
         infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
         return render(request, 'group.html',
-                      {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV, 'batches': batches,'ProductInBatches': ProductInBatches})
+                      {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV, 'batches': batches,
+                       'ProductInBatches': ProductInBatches, 'QFeature': QFeature,
+                       'ProductInBatchesC': ProductInBatchesC, 'groups': group})
+    elif request.method == 'POST' and 'SubmitGroupProductDetail' in request.POST:
+        batches = Batch.objects.values('id', 'BatchName', 'BatchDescription').order_by('BatchName', 'BatchDescription',
+                                                                                       'id')
+        QFeature = QualityFeature.objects.values('Name').distinct()
+        infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
+        infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
+        infSV = InfluencingFactor.objects.filter(Type="String").values('Name', 'Value').order_by('Name',
+                                                                                                 'Value').distinct()
+        infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
 
-
+        return render(request, 'group.html',
+                      {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV, 'batches': batches,
+                       'QFeature': QFeature})
     else:
         batches = Batch.objects.values('id', 'BatchName', 'BatchDescription').order_by('BatchName', 'BatchDescription',
                                                                                        'id')
+        QFeature = QualityFeature.objects.values('Name').distinct()
         infLD = InfluencingFactor.objects.filter(Type="Decimal").values('Name').order_by('Name').distinct()
         infLS = InfluencingFactor.objects.filter(Type="String").values('Name').order_by('Name').distinct()
         infSV = InfluencingFactor.objects.filter(Type="String").values('Name', 'Value').order_by('Name',
@@ -661,7 +708,8 @@ def group(request):
         infLDT = InfluencingFactor.objects.filter(Type="Date").values('Name').order_by('Name').distinct()
 
         return render(request, 'group.html',
-                      {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV, 'batches': batches})
+                      {'infLD': infLD, 'infLS': infLS, 'infLDT': infLDT, 'infSV': infSV, 'batches': batches,
+                       'QFeature': QFeature })
 
 
 def visualization(request):

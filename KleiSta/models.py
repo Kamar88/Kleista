@@ -42,6 +42,7 @@ class BatchProduct(models.Model):
         default=timezone.now)
 
 
+
 class BatchInfluencingFactorCriteria(models.Model):
     BatchId = models.ForeignKey(Batch, on_delete=models.CASCADE)
     DecimalList = models.TextField()
@@ -104,3 +105,7 @@ class GroupProduct(models.Model):
     ProductId = models.ForeignKey(Product, on_delete=models.CASCADE)
     CreationDate = models.DateTimeField(
         default=timezone.now)
+    BatchId= models.ForeignKey(Batch,on_delete=models.CASCADE,default=1)
+    QualityFeatureId = models.ForeignKey(QualityFeature, on_delete=models.CASCADE, default=1)
+
+
