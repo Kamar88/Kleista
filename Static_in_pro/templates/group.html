@@ -328,7 +328,7 @@
                 <table id="example" class="display" cellspacing="0" width="100%">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>
                         <th>Product</th>
                         <th>Date</th>
                         <th>LSL</th>
@@ -336,6 +336,8 @@
                         <th>Batch</th>
                         <th>QFeature Value</th>
                         <th>Total</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -348,6 +350,9 @@
                         <th>Batch</th>
                         <th>QFeature Value</th>
                         <th>Total</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -365,9 +370,12 @@
                                     <td>{{ entry.total }}</td>
                                 {% endif %}
                             {% endfor %}
+                            <td>{{ product.ProductId_id}}</td>
+                            <td>{{ product.BatchId_id}}</td>
+                            <td></td>
                             <input name="QualityFName" value="{{ product.ProductId__qualityfeature__Name}}" hidden/>
-                            <input name="BatchId" value="{{ product.BatchId_id}}" hidden/>
-                            <input name="ProductId" value="{{product.ProductId_id }}" hidden/>
+                            <input id="BatchId" name="BatchId" value="{{ product.BatchId_id}}" hidden/>
+                            <input name="ProductId" id="ProductId" value="{{product.ProductId_id }}" hidden/>
 
                         </tr>
                     {% endfor %}
@@ -380,8 +388,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <button type="submit" name="SubmitGroupProductDetail" class="btn btn-primary pull-right"
-                            onclick="GetMaxSampN()"
-                            style="margin-top: 20px">Submit
+                            style="margin-top: 20px" onclick="GetMaxSampN()">Submit
                     </button>
                 </div>
             </div>

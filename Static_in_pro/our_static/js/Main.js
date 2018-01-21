@@ -219,14 +219,19 @@ $(document).ready(function () {
     // DataTable
     var table = $('#example').DataTable({
         columnDefs: [{
-            orderable: false,
-            targets: 0,
-            'checkboxes': {
-                'selectRow': true
+            'targets': 0,
+         'searchable':false,
+         'orderable':false,
+         'className': 'dt-body-center',
+         'render': function (data, type, full, meta){
+             return '<input type="checkbox" id="CK" name="id[]" value="'
+                + $('<div/>').text(data[8]).html() + '">';
             }
         },
-            {"visible": false, "targets": 5}
-
+            {"visible": false, "targets": 5},
+            {"visible": false, "targets": 8},
+            {"visible": false, "targets": 9},
+            {"visible": false, "targets": 10},
         ],
         'select': {
             'style': 'multi'
@@ -242,6 +247,9 @@ $(document).ready(function () {
             else {
                 // $('td', nRow).css('background-color', 'White');
             }
+
+             $('td', nRow).find('input').attr('value', aData[8]);
+
         },
         "drawCallback": function (settings) {
             var api = this.api();
@@ -257,6 +265,7 @@ $(document).ready(function () {
                     last = group;
                 }
             });
+
         }
     });
 
@@ -272,25 +281,55 @@ $(document).ready(function () {
         }
     });
 
+    $('#example-select-all').on('click', function(){
+
+      // Check/uncheck all checkboxes in the table
+      var rows = table.rows({ 'search': 'applied' }).nodes();
+      $('input[type="checkbox"]', rows).prop('checked', this.checked);
+
+        if(this.checked)
+        {
+             $('input[type="checkbox"]', rows).prop('name', 'CKT');
+
+
+        }
+        else {
+
+            $('input[type="checkbox"]', rows).prop('name', 'CKF');
+
+        }
+   });
+
+
+
+   // Handle click on checkbox to set state of "Select all" control
+   $('#example tbody').on('change', 'input[type="checkbox"]', function(){
+       var row =  $(this).closest('tr');
+         if(this.checked)
+        {
+             $(this).attr('name', 'CKT');
+               $(row).find('td:eq(10)').attr('text','True') ;
+        }
+        else {
+
+             $(this).attr('name', 'CKF');
+             $(row).find('td:eq(10)').attr('text','False') ;
+        }
+      // If checkbox is not checked
+      if(!this.checked){
+         var el = $('#example-select-all').get(0);
+         // If "Select all" control is checked and has 'indeterminate' property
+         if(el && el.checked && ('indeterminate' in el)){
+            // Set visual state of "Select all" control
+            // as 'indeterminate'
+            el.indeterminate = true;
+         }
+      }
+   });
+
+
+
     // Handle form submission event
-    $('#ProductDetailT').on('Submit', function (e) {
-
-        alert('form') ;
-        var form = this;
-
-        var rows_selected = table.column(0).checkboxes.selected();
-
-        // Iterate over all selected checkboxes
-        $.each(rows_selected, function (index, rowId) {
-            // Create a hidden element
-            $(form).append(
-                $('<input>')
-                    .attr('type', 'hidden')
-                    .attr('name', 'id[]')
-                    .val(rowId)
-            );
-        });
-    });
 
     // Apply the search
     table.columns().every(function () {
@@ -312,7 +351,7 @@ $(document).ready(function () {
     function( settings, data, dataIndex ) {
         var min = parseInt( $('#SampleN').val(), 10 );
 
-        var SampleNum = parseFloat( data[7] ) || 0; // use data for the age column
+        var SampleNum = parseFloat( data[7] ) || 0; // use data for the total column
 
         if ( ( isNaN( min )) || ( min <= SampleNum ))
         {
@@ -333,7 +372,10 @@ $(document).ready(function () {
 
 });
 
-/*function GetMaxSampN() {
+function GetMaxSampN() {
+
+
+    //get the highest number of total product
     var table = $('#example').DataTable();
     var nextSeqNum = table
         .column(7)
@@ -342,21 +384,32 @@ $(document).ready(function () {
         .reverse()[0];
     var col3 = nextSeqNum;
 
-    var rows_selected = table.column(0).checkboxes.selected();
+    //get the row value for each group
 
-        // Iterate over all selected checkboxes
+     var data = table.rows().data();
+     data.each(function (value, index) {
+         alert('Data in index: ' + index + ' is: ' + value) ;
+     console.log('Data in index: ' + index + ' is: ' + value);
+    });
+
+
+    /*var rows_selected = table.column(0).checkboxes.selected();
+
+    alert(rows_selected) ;
         $.each(rows_selected, function (index, rowId) {
+            alert($(rows_selected).find('input').val()) ;
+            alert(rowId) ;
             // Create a hidden element
             $('#ProductDetailT').append(
                 $('<input>')
                     .attr('type', 'hidden')
-                    .attr('name', 'id[]')
+                    .attr('name', 'idS[]')
                     .val(rowId)
             );
         });
 
-
-}*/
+*/
+}
 
 
 var id = 0, is = 0, idt = 0;
