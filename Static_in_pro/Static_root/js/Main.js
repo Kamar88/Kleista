@@ -140,7 +140,7 @@ $(document).ready(function () {
     // $('.input-daterange').datepicker({
 //});
     //display the datetimepicker and assign the selected date to the input field on change or on update
-    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'}).on('dp.change dp.update', function () {
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii:ss'}).on('dp.change dp.update', function () {
         $(".form_datetime").find("input").eq(1).attr("value", $(".form_datetime").data("DateTimePicker").date())
 
     });
@@ -151,6 +151,19 @@ $(document).ready(function () {
     $('#InfCheckBox').on('click', function () {
         $(this).val(this.checked ? 1 : 0);
 
+    });
+
+    $('#SampleN').change(function () {
+
+
+    });
+
+
+
+    //checklater
+    $(".nav-item a").on("click", function () {
+        $(".nav-item").find(".active").removeClass("active");
+        $(this).parent().addClass("active");
     });
 
     $('#search').multiselect({
@@ -185,97 +198,288 @@ $(document).ready(function () {
         }
     });
 
-    $('#example tfoot th').each( function () {
+    $('#example tfoot th').each(function () {
         var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-    } );
+        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    });
 
     // DataTable
-    var table =  $('#example').DataTable( {
-        columnDefs: [ {
-            orderable: false,
-            targets:   0 ,
-            'checkboxes': {
-               'selectRow': true
+    var table = $('#example').DataTable({
+        columnDefs: [{
+            'targets': 0,
+            'searchable': false,
+            'orderable': false,
+            'className': 'dt-body-center',
+            'render': function (data, type, full, meta) {
+                return '<input type="checkbox" id="CK" name="id[]" class="edit" value="'
+                    + $('<div/>').text(data[9]).html() + '">';
             }
-        } ,
-          { "visible": false, "targets": 5 }
-
+        },
+            {"visible": false, "targets": 5},
+            {"visible": false, "targets": 8},
+            {"visible": false, "targets": 9},
+            {"visible": false, "targets": 10},
+            {"visible": false, "targets": 11},
         ],
         'select': {
-         'style': 'multi'
-      },
+            'style': 'multi'
+        },
 
-        "order": [[ 5, 'asc' ]],
+        "order": [[5, 'asc']],
         "displayLength": 25,
-        "drawCallback": function ( settings ) {
-            var api = this.api();
-            var rows = api.rows( {page:'current'} ).nodes();
-            var last=null;
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            if (aData[7] > 1) {
+                $('td', nRow).css('background-color', '#FFAB91');
+                // $('td', nRow).css('color', 'White');
+            }
+            else {
+                // $('td', nRow).css('background-color', 'White');
+            }
+            //set the value of the input field inside checkbox
+            $('td', nRow).find('input').attr('value', aData[9]);
 
-            api.column(5, {page:'current'} ).data().each( function ( group, i ) {
-                if ( last !== group ) {
-                    $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="7">'+group+'</td></tr>'
+        },
+        "drawCallback": function (settings) {
+            var api = this.api();
+            var rows = api.rows({page: 'current'}).nodes();
+            var last = null;
+
+            api.column(5, {page: 'current'}).data().each(function (group, i) {
+                if (last !== group) {
+                    $(rows).eq(i).before(
+                        '<tr class="group" style="background-color:#17a2b8;color: white "><td colspan="7">' + group + '</td></tr>'
                     );
 
                     last = group;
                 }
-            } );
+            });
+
         }
-    } );
-
-
-
-
-
+    });
 
 
     // Order by the grouping
-    $('#example tbody').on( 'click', 'tr.group', function () {
+    $('#example tbody').on('click', 'tr.group', function () {
         var currentOrder = table.order()[0];
-        if ( currentOrder[0] === 5 && currentOrder[1] === 'asc' ) {
-            table.order( [ 5, 'desc' ] ).draw();
+        if (currentOrder[0] === 5 && currentOrder[1] === 'asc') {
+            table.order([5, 'desc']).draw();
         }
         else {
-            table.order( [ 5, 'asc' ] ).draw();
+            table.order([5, 'asc']).draw();
         }
-    } );
+    });
 
-   // Handle form submission event
-   $('#frm-example').on('submit', function(e){
-      var form = this;
+    $('#example-select-all').on('click', function () {
 
-      var rows_selected = table.column(0).checkboxes.selected();
+        // Check/uncheck all checkboxes in the table
+        var rows = table.rows({'search': 'applied'}).nodes();
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
 
-      // Iterate over all selected checkboxes
-      $.each(rows_selected, function(index, rowId){
-         // Create a hidden element
-         $(form).append(
-             $('<input>')
-                .attr('type', 'hidden')
-                .attr('name', 'id[]')
-                .val(rowId)
-         );
-      });
-   });
+        if (this.checked) {
+            $('input[type="checkbox"]', rows).prop('name', 'CKT');
+
+
+        }
+        else {
+
+            $('input[type="checkbox"]', rows).prop('name', 'CKF');
+
+        }
+    });
+
+
+    // Handle click on checkbox to set state of "Select all" control
+    $('#example tbody').on('change', 'input[type="checkbox"]', function () {
+        var row = $(this).closest('tr');
+        if (this.checked) {
+            $(this).attr('name', 'CKT');
+        }
+        else {
+
+            $(this).attr('name', 'CKF');
+        }
+
+        // If checkbox is not checked
+        if (!this.checked) {
+            var el = $('#example-select-all').get(0);
+            // If "Select all" control is checked and has 'indeterminate' property
+            if (el && el.checked && ('indeterminate' in el)) {
+                // Set visual state of "Select all" control
+                // as 'indeterminate'
+                el.indeterminate = true;
+            }
+        }
+    });
+
+
+    // Handle form submission event
 
     // Apply the search
-    table.columns().every( function () {
+    table.columns().every(function () {
         var that = this;
 
-        $( 'input', this.footer() ).on( 'keyup change', function () {
-            if ( that.search() !== this.value ) {
+        $('input', this.footer()).on('keyup change', function () {
+            if (that.search() !== this.value) {
                 that
-                    .search( this.value )
+                    .search(this.value)
                     .draw();
             }
-        } );
-    } );
+        });
+    });
+
+    $.fn.dataTableExt.ofnSearch['html'] = function (sData) {
+        return $(sData).val();
+    }
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = parseInt($('#SampleN').val(), 10);
+
+            var SampleNum = parseFloat(data[7]) || 0; // use data for the total column
+
+            if (( isNaN(min)) || ( min <= SampleNum )) {
+
+                return true;
+            }
+            return false;
+        }
+    );
+
+    var table = $('#example').DataTable();
+
+    $('#SampleN').keyup(function () {
+         var table = $('#example').DataTable();
+        var data =  table.rows({filter: 'applied'}).data();
+        var samplNum= $('#SampleN').val()
+    $.each(data, function (index, value) {
+        alert(data[index][7]) ;
+        if(data[index][7]==samplNum)
+        {
+            alert(2) ;
+             $(this).find('input[class="edit"]').prop('checked', true);
+            //$(this).find('input').prop('checked',1);
+
+        }
+         if(data[index][7]!=samplNum)
+        {
+            alert(1) ;
+             $(this).find('input[class="edit"]').prop('checked', false);
+            //$(this).find('input').prop('checked',1);
+
+        }
+        });
+        table.draw();
+
+
+    });
 
 
 });
 
+function GetMaxSampN(e) {
+  e.preventDefault();
+    //get the highest number of total product
+    var table = $('#example').DataTable();
+    var nextSeqNum = table
+        .column(7)
+        .data()
+        .sort()
+        .reverse()[0];
+    var col3 = nextSeqNum;
+
+    var sampNo = $('#SampleN').val();
+    if (nextSeqNum > 1 && ($('#SampleN').val() == '')) {
+        $('#model1').modal('show');
+    }
+
+    var countCk = 0; // count the selected row
+    var numrow = table.rows({filter: 'applied'}).nodes().length; //get the number of row in the table
+    var data = table.rows({filter: 'applied'}).data(); //get the data after applying any filter
+
+
+    var arr = new Array(numrow);
+    for (i = 0; i < numrow; i++)
+        arr[i] = new Array(7)
+
+
+    var i = 0;
+    data.each(function (value, index) {
+        arr[i][0] = index;  //rowNum
+        arr[i][1] = data[index][1];  //productName
+        arr[i][2] = data[index][11]; //QualityFeatureName
+        arr[i][3] = data[index][10]; //batchID
+        arr[i][4] = data[index][9]; //productId
+        arr[i][5] = data[index][5]; //BatchName
+        i++;
+
+    });
+    var seleIndex = [];
+    var j = 0;
+//get the selected data from table
+    var data = table.rows({filter: 'applied'}).nodes();
+    $.each(data, function (index, value) {
+
+        console.log($(this).find('input').prop('checked'));
+
+        if ($(this).find('input').prop('checked')) {
+            countCk = countCk + 1;
+            seleIndex[j] = index;
+            j++;
+        }
+    });
+
+    for (i = 0; i < numrow; i++)
+        for (j = 0; j < seleIndex.length; j++) {
+            if (arr[i][0] == seleIndex[j]) {
+                arr[i][6] = 'Selected';
+            }
+
+        }
+
+        /*for (i = 0; i < numrow; i++) {
+           alert(arr[i][0] + ',' + arr[i][1] + ',' + arr[i][2] + ',' + arr[i][3] + ',' +  arr[i][4] + ',' + arr[i][5] + ',' + arr[i][6] ) ;
+
+        }*/
+
+
+  if(countCk > 0) {
+    for (i = 0; i < numrow; i++) {
+        var np = 0;
+            for (j = 0; j < numrow; j++) {
+                if (arr[i][3] == arr[j][3] && arr[i][1] == arr[j][1] ) {
+
+                    //alert('inside j loop before select ' + arr[j][0] + arr[i][5] + arr[i][1]);
+                    if(arr[j][6] == 'Selected') {
+                        np++;
+                        //alert('inside j loop selected '  + arr[j][0]  + arr[i][5] + arr[i][1]);
+                    }
+                }
+            }
+
+            //alert ('outside j loop ' + arr[i][5] + arr[i][1] + np ) ;
+            if (sampNo != np) {
+                    //alert('modalError') ;
+                    var mymodal = $('#modalError');
+                    mymodal.find('.modal-body').text('') ;
+                    mymodal.find('.modal-body').text('You selected wrong number of product for Batch : ' + arr[i][5] + ', Product: ' + arr[i][1] );
+                    mymodal.modal('show');
+                    break ;
+
+            }
+
+        }
+        }
+
+
+    if ($('#SampleN').val() && countCk == 0) {
+        $('#model2').modal('show');
+    }
+
+}
+
+$('#SubmitGroupProductDetail').click(function () {
+    /* when the submit button in the modal is clicked, submit the form */
+    $('#ProductDetailT').submit();
+});
 
 var id = 0, is = 0, idt = 0;
 var original = document.getElementById('duplicater');
@@ -324,7 +528,7 @@ function duplicate(t, e, event) {
         $(clone).insertAfter("#" + $(e).closest('.after-add-more-DT').attr("id"));
         $(cloneOp).insertBefore("#" + $(clone).attr('id'));
         $(".form_datetime").datetimepicker({
-            format: 'yyyy-mm-dd hh:ii'
+            format: 'yyyy-mm-dd hh:ii:ss'
         });
     }
 }
@@ -376,6 +580,21 @@ function ClearRelatedTextBox(e, d) {
 
     //document.getElementById('dtp_input1').value = "";
 }
+
+//create multidimensional Array
+var genArray = function () {
+    var arr, len, i;
+    if (arguments.length > 0) {
+        len = [].slice.call(arguments, 0, 1)[0];
+        arr = new Array(len);
+        for (i = 0; i < len; i++) {
+            arr[i] = genArray.apply(null, [].slice.call(arguments, 1));
+        }
+    } else {
+        return null; //or whatever you want to initialize values to.
+    }
+    return arr;
+};
 
 
 //$('#move_INF').click(function() {

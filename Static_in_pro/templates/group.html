@@ -316,10 +316,7 @@
                     <label for="SampleN" style="color: red"><h5>Enter the number of sample for each
                         product:</h5></label>
                     <input type="text" id="SampleN" name="SampleN"/>
-                </div>
-                <div class="checkbox">
-                    <label><h5><input type="checkbox" name="SSCheckBox" id="SSCheckBox" value="0"> Select which Products
-                        to include. Otherwise, the products will be selected in their chronological order</h5></label>
+                    <button type="button" class="btn btn-default" onclick="SelectSample()">Cancel</button>
                 </div>
             </div>
 
@@ -328,7 +325,7 @@
                 <table id="example" class="display" cellspacing="0" width="100%">
                     <thead>
                     <tr>
-                        <th><input name="select_all" value="1" id="example-select-all" type="checkbox" /></th>
+                        <th><input name="select_all" value="1" id="example-select-all" type="checkbox"/></th>
                         <th>Product</th>
                         <th>Date</th>
                         <th>LSL</th>
@@ -336,8 +333,6 @@
                         <th>Batch</th>
                         <th>QFeature Value</th>
                         <th>Total</th>
-                        <th></th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -350,6 +345,7 @@
                         <th>Batch</th>
                         <th>QFeature Value</th>
                         <th>Total</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -367,31 +363,89 @@
                             <td>{{ product.ProductId__qualityfeature__Value }}</td>
                             {% for entry in ProductInBatchesC %}
                                 {% if entry.ProductId__Name == product.ProductId__Name and product.BatchId_id == entry.BatchId_id %}
-                                    <td>{{ entry.total }}</td>
+                                    <td class="total">{{ entry.total }}</td>
                                 {% endif %}
                             {% endfor %}
-                            <td>{{ product.ProductId_id}}</td>
-                            <td>{{ product.BatchId_id}}</td>
-                            <td></td>
-                            <input name="QualityFName" value="{{ product.ProductId__qualityfeature__Name}}" hidden/>
-                            <input id="BatchId" name="BatchId" value="{{ product.BatchId_id}}" hidden/>
-                            <input name="ProductId" id="ProductId" value="{{product.ProductId_id }}" hidden/>
+                            <td id="hid">False</td>
+                            <td>{{ product.ProductId_id }}</td>
+                            <td>{{ product.BatchId_id }}</td>
+                            <td>{{ product.ProductId__qualityfeature__Name }}</td>
+                            <input name="QualityFName" value="{{ product.ProductId__qualityfeature__Name }}" hidden/>
+                            <input id="BatchId" name="BatchId" value="{{ product.BatchId_id }}" hidden/>
+                            <input name="ProductId" id="ProductId" value="{{ product.ProductId_id }}" hidden/>
 
                         </tr>
                     {% endfor %}
 
-                     <input name="GroupId" value="{{ groups.id }}" hidden />
+                    <input name="GroupId" value="{{ groups.id }}" hidden/>
 
                     </tbody>
                 </table>
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <button type="submit" name="SubmitGroupProductDetail" class="btn btn-primary pull-right"
-                            style="margin-top: 20px" onclick="GetMaxSampN()">Submit
+                    <button type="button" name="SubmitGroupProductDetail1" class="btn btn-primary pull-right"
+                            style="margin-top: 20px" onclick="GetMaxSampN(event)">Submit
                     </button>
                 </div>
             </div>
         </form>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+             id="model1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Confirm Submit
+                    </div>
+                    <!-- if the user did not enter the number of samples for each product -->
+                    <div class="modal-body" id="Sit1">
+                        You did not enter the <b> number of samples for each product</b>. One measurement will be taken
+                        for each product.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <a href="#" id="SubmitGroupProductDetail" class="btn btn-success success">Submit</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+             id="model2">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Confirm Submit
+                    </div>
+                    <!-- if the user did not enter the number of samples for each product -->
+                    <div class="modal-body" id="Sit1">
+                        You did not Select any <b>Product</b>. The products will be selected in order.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <a href="#" id="SubmitGroupProductDetail" class="btn btn-success success">Submit</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+             id="modalError">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Error</h4>
+                    </div>
+                    <!-- if the user did not enter the number of samples for each product -->
+                    <div class="modal-body">
+                        <p> </p>
+                    </div>
+                      <div class="modal-footer">
+                    <button type="button" class="btn btn-success success" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 {% endblock %}

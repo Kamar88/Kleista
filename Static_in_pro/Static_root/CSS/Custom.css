@@ -163,6 +163,6 @@ tfoot input {
         box-sizing: border-box;
 }
 
-tr.group {
-    background-color: #17a2b8 !important;
+.hidden{
+    display: none;
 }
