@@ -139,6 +139,7 @@ $(document).ready(function () {
     $('.js-example-basic-single').select2();
     // $('.input-daterange').datepicker({
 //});
+
     //display the datetimepicker and assign the selected date to the input field on change or on update
     $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii:ss'}).on('dp.change dp.update', function () {
         $(".form_datetime").find("input").eq(1).attr("value", $(".form_datetime").data("DateTimePicker").date())
@@ -509,6 +510,13 @@ function duplicate(t, e, event) {
         $(clone).insertAfter("#" + $(e).closest('.after-add-more-S').attr("id"));
         $(clone).find("select").attr("id", countinfS);
         $(cloneOp).insertBefore("#" + $(clone).attr('id'));
+
+          var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
+    for (var i = 0; i < sub.length; i++) {
+            sub.options[i].hidden = true;
+    }
+
+
     }
     if (t == "after-add-more-DT") {
         var operation = document.getElementById('AndOrFDa');
@@ -530,7 +538,7 @@ function duplicate(t, e, event) {
 
 $(function () {
     bs_input_file();
-
+    setNavigation();
     $(document).on('click', '.btn-add', function (e) {
         e.preventDefault();
 
@@ -576,36 +584,14 @@ function ClearRelatedTextBox(e, d) {
     //document.getElementById('dtp_input1').value = "";
 }
 
-function SelectSample()
-{
-    var table =  $('#example').DataTable();
 
-    table.rows({'search': 'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
-
-        var rowNode = this.node();
-        var total = $(rowNode).find("td.total").text() ;
-        var SampleN = $('#SampleN').val() ;
-
-        if (total==SampleN)
-        {
-            $(rowNode).find('input[type="checkbox"]').prop('checked', 'checked') ;
+function setNavigation() {
+    var links = $('.navbar ul li a');
+    $.each(links, function (key, va) {
+        if (va.href == document.URL) {
+            $(this).addClass('active');
         }
-
-
-});
-
-      /*  $('input[type="checkbox"]', rows).prop('checked', this.checked);
-
-        if (this.checked) {
-            $('input[type="checkbox"]', rows).prop('name', 'CKT');
-
-
-        }
-        else {
-
-            $('input[type="checkbox"]', rows).prop('name', 'CKF');
-
-        }*/
+    });
 }
 
 
