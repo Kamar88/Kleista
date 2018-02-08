@@ -317,6 +317,10 @@
                         product:</h5></label>
                     <input type="text" id="SampleN" name="SampleN"/>
                 </div>
+
+                 <div class="checkbox">
+                    <label><input type="checkbox" name="Noselect" id="Noselectcb" value="0"> Do not select Product. Take them in order</label>
+                </div>
             </div>
 
 
@@ -365,13 +369,13 @@
                                     <td class="total">{{ entry.total }}</td>
                                 {% endif %}
                             {% endfor %}
-                            <td id="hid">False</td>
+                            <td >{{ product.id }}</td>
                             <td>{{ product.ProductId_id }}</td>
                             <td>{{ product.BatchId_id }}</td>
                             <td>{{ product.ProductId__qualityfeature__Name }}</td>
                             <input name="QualityFName" value="{{ product.ProductId__qualityfeature__Name }}" hidden/>
                             <input id="BatchId" name="BatchId" value="{{ product.BatchId_id }}" hidden/>
-                            <input name="ProductId" id="ProductId" value="{{ product.ProductId_id }}" hidden/>
+                            <input name="ProductId" id="ProductId" value="{{ product.id }}" hidden/>
 
                         </tr>
                     {% endfor %}
@@ -397,9 +401,8 @@
                         Confirm Submit
                     </div>
                     <!-- if the user did not enter the number of samples for each product -->
-                    <div class="modal-body" id="Sit1">
-                        You did not enter the <b> number of samples for each product</b>. One measurement will be taken
-                        for each product.
+                    <div class="modal-body">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -409,25 +412,7 @@
             </div>
 
         </div>
-        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
-             id="model2">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        Confirm Submit
-                    </div>
-                    <!-- if the user did not enter the number of samples for each product -->
-                    <div class="modal-body" id="Sit1">
-                        You did not Select any <b>Product</b>. The products will be selected in order.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <a href="#" id="SubmitGroupProductDetail" class="btn btn-success success">Submit</a>
-                    </div>
-                </div>
-            </div>
 
-        </div>
      <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
              id="modalError">
             <div class="modal-dialog">

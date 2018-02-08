@@ -20,7 +20,7 @@
         <div class="col-lg-12" style="margin-top: 5px;">
             <table id="myTable" class="table table-striped col-lg-12" data-toggle="table"
                    data-detail-view="true"
-                   data-detail-formatter="detailFormatter" style="background-color: white">
+                    style="background-color: white">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -35,19 +35,6 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ product.Name }}</td>
                         <td>{{ product.ExportDate }}</td>
-                        <span class="col-lg-12" style="display: none;" id="desc{{ forloop.counter0 }}">
-
-                                    {% for i in infVLisL %}
-                                        {% if i.ProductId_id ==  product.id %}
-
-                                            <div class="row col-lg-12"> <div
-                                                    class="col-lg-3"><strong class="bold">{{ i.Name }}</strong> </div><div
-                                                    class="col-lg-3"> : {{ i.Value }} </div> </div>
-
-                                        {% endif %}
-
-                                    {% endfor %}
-                                </span>
                     </tr>
                 {% endfor %}
                 </tbody>

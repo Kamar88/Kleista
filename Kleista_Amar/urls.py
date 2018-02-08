@@ -17,9 +17,10 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-
+from KleiSta import views
 
 urlpatterns = [
+    #url(r'^plot/$', 'KleiSta.views.Gra', name='plot'),
     url(r'^$', 'KleiSta.views.home', name='home'),
     url(r'^batch/$', 'KleiSta.views.batch', name='batch'),
     url(r'^group/$', 'KleiSta.views.group', name='group'),

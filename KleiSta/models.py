@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 import datetime
 
+from django.db import transaction
+
 now = datetime.datetime.now()
 
 
@@ -107,5 +109,7 @@ class GroupProduct(models.Model):
         default=timezone.now)
     BatchId= models.ForeignKey(Batch,on_delete=models.CASCADE,default=1)
     QualityFeatureId = models.ForeignKey(QualityFeature, on_delete=models.CASCADE, default=1)
+    SampleNo=models.IntegerField(default=1)
+
 
 

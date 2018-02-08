@@ -1,3 +1,4 @@
+//upload file and verify that it is an excel sheet.
 function bs_input_file() {
     $(".input-file").before(
         function () {
@@ -25,44 +26,65 @@ function bs_input_file() {
     );
 }
 
+
+//use the drag and drop event of HTML5
+//this function allow the drop of event in any container
 function allowDrop(event) {
     event.preventDefault();
 }
 
+//drag function to enable the drag and drop of an elment
+//during the drag save the information for the drag element
 function drag(e, event) {
-    //alert($(e).attr("value"));
-    //alert($(e).attr("id"));
-    event.dataTransfer.setData("Text", $(e).attr("value"));
-    event.dataTransfer.setData("item", event.target.id);
+    event.dataTransfer.setData("Text", $(e).attr("value")); //set the text of the drag element
+    event.dataTransfer.setData("item", event.target.id);   //get the dragged element
     event.dataTransfer.setData("id", $(e).attr("id"));
-    //$(e).parent().find('input#copyInput').filter(function () {return this.name == $(e).attr("id")
+
+    //remove the element from the first container
     $(e).parent().find('input').filter(function () {
         return this.id == $(e).attr("id")
     }).remove()
 }
 
+//drag and drop event is created for list item. The problem with list item that
+//they can not be send to the server so we should create input element
+//for each dropped element
+//the name of the input field should have the same name of the dragged element
+//the name of the dragged element represent INf,QF, or Product details
+
 function drop(e, event) {
     event.preventDefault();
-    //alert($(e).attr("name"));
-    $("#copyInput").attr("name", $(e).attr("name"));
-    var clone = $("#copyInput").clone();
+    $("#copyInput").attr("name", $(e).attr("name")); //get the hidden input filed and set its name to the drop element name
+    var clone = $("#copyInput").clone(); // copy the element using clone method
+    //use the dataTransfer.getData to get the data that you have sat in the setData
+    //during the drag event
     $(clone).attr("value", event.dataTransfer.getData("Text"));
-    //$(clone).attr("name", $(e).attr("name"));
     $(clone).attr("id", event.dataTransfer.getData("id"));
-    //alert(event.dataTransfer.getData("Text"));
+
+    //append the dragged element to the container and append the input field
     var dataItem = event.dataTransfer.getData("item");
     $(e).append(document.getElementById(dataItem));
     $(e).append(clone);
 
 }
 
+
+//move to influencing factors function
+//this function is used to transfer all the data that are in the main category container
+//to the INF containers
 function onClick() {
 
+    //get the main category that include all the column names
     var ulm = document.getElementById("ML");
+    //get the influencing factor container
     var ul = document.getElementById("InflFactor");
+    //get the list that are inside the INF
     var listItem = ulm.getElementsByTagName("li");
-    //("#ML").appendTo("#InflFactor");
-    //alert(listItem.length)
+    //loop through all the list elements to create
+    // input fileds for them, so they can be send to the server.
+    //then append the item to the INF container, so it will be
+    //removed form the general container to INF container
+
     while (listItem.length > 0) {
         for (var i = 0; i < listItem.length; i++) {
             var clone = $("#copyInput").clone();
@@ -78,7 +100,6 @@ function onClick() {
 }
 
 $(document).on('click', '.btn-add', function (e) {
-    alert('add')
     e.preventDefault();
 
     var controlForm = $('.controls form:first'),
@@ -96,10 +117,18 @@ $(document).on('click', '.btn-add', function (e) {
     e.preventDefault();
     return false;
 });
-var countinfS = 0;
 
+
+var countinfS = 0;
+//this function is created to remove the extra added categories
+//in the Batch page. The first element should not be deleted always
+//to know the first element it always has the duplicterD id without extra number
+//when we delete element it could be either in the date, string or decimal category
+//each category should be manipulated alone. The operation field that is added with
+//the category should be removed also
 function onClickremove(t, e, event) {
     event.preventDefault();
+    //remove decimal control
     if (t == "after-add-more-DF") {
         if ($(e).closest('.after-add-more-DF').attr("id") != "duplicaterD") {
             var ido = $(e).closest('.after-add-more-DF').attr('id');
@@ -110,6 +139,7 @@ function onClickremove(t, e, event) {
 
         }
     }
+    //remove string control
     if (t == "after-add-more-S") {
         if ($(e).closest('.after-add-more-S').attr("id") != "duplicaterS") {
             var ido = $(e).closest('.after-add-more-S').attr('id');
@@ -120,6 +150,8 @@ function onClickremove(t, e, event) {
             --countinfS;
         }
     }
+
+    //remove datetime control
     if (t == "after-add-more-DT") {
         if ($(e).closest('.after-add-more-DT').attr("id") != "duplicaterDT") {
             var ido = $(e).closest('.after-add-more-DT').attr('id');
@@ -137,8 +169,6 @@ function onClickremove(t, e, event) {
 $(document).ready(function () {
     $('.js-example-basic-multiple').select2();
     $('.js-example-basic-single').select2();
-    // $('.input-daterange').datepicker({
-//});
 
     //display the datetimepicker and assign the selected date to the input field on change or on update
     $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii:ss'}).on('dp.change dp.update', function () {
@@ -146,6 +176,8 @@ $(document).ready(function () {
 
     });
 
+
+    //display the influencing factor filter criteria in the group page
     $('#InfCheckBox').change(function () {
         $('#InfluncingFactorDetails').toggle();
     });
@@ -154,36 +186,44 @@ $(document).ready(function () {
 
     });
 
+    //to let the user decide if he wants to select product or not
+    $('#Noselectcb').on('click', function () {
+        $(this).val(this.checked ? 1 : 0);
+
+    });
+
+
+    //if the user enter the number of samples he/she wants for each product,
+    //select products that have the same number of samples in the product tables in
+    //group page
     $('#SampleN').change(function () {
-        table.rows({'search': 'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
+        table.rows({'search': 'applied'}).every(function (rowIdx, tableLoop, rowLoop) {
 
-        var rowNode = this.node();
-        var total = $(rowNode).find("td.total").text() ;
-        var SampleN = $('#SampleN').val() ;
+            var rowNode = this.node();
+            var total = $(rowNode).find("td.total").text();
+            var SampleN = $('#SampleN').val();
 
-        if (total==SampleN)
-        {
-            $(rowNode).find('input[type="checkbox"]').prop('checked', 'checked') ;
-            $(rowNode).find('input[type="checkbox"]').prop('name', 'CKT');
-        }
-        if (total!=SampleN)
-        {
-            $(rowNode).find('input[type="checkbox"]').prop('checked', '') ;
-            $(rowNode).find('input[type="checkbox"]').prop('name', 'CKF');
+            if (total == SampleN) {
+                $(rowNode).find('input[type="checkbox"]').prop('checked', 'checked');
+                $(rowNode).find('input[type="checkbox"]').prop('name', 'CKT');
+            }
+            if (total != SampleN) {
+                $(rowNode).find('input[type="checkbox"]').prop('checked', '');
+                $(rowNode).find('input[type="checkbox"]').prop('name', 'CKF');
 
-        }
+            }
         });
 
     });
 
 
-
-    //checklater
+    //set the active menu element to the current page element
     $(".nav-item a").on("click", function () {
         $(".nav-item").find(".active").removeClass("active");
         $(this).parent().addClass("active");
     });
 
+    //enable search in datatables control
     $('#search').multiselect({
         search: {
             left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
@@ -194,8 +234,12 @@ $(document).ready(function () {
         }
     });
 
+
+    //batch detail Table
     var $table = $('#myTable');
 
+
+    //enable the expand or row to display product detail
     $table.on('expand-row.bs.table', function (e, index, row, $detail) {
         var res = $("#desc" + index).html();
         $detail.html(res);
@@ -216,6 +260,8 @@ $(document).ready(function () {
         }
     });
 
+    //DataTable enable the search in the bottom of the table
+
     $('#example tfoot th').each(function () {
         var title = $(this).text();
         $(this).html('<input type="text" placeholder="Search ' + title + '" />');
@@ -231,7 +277,7 @@ $(document).ready(function () {
             'render': function (data, type, full, meta) {
                 return '<input type="checkbox" id="CK" name="id[]" class="edit" value="'
                     + $('<div/>').text(data[9]).html() + '">';
-            }
+            } //add input field in side the checkbox td
         },
             {"visible": false, "targets": 5},
             {"visible": false, "targets": 8},
@@ -248,7 +294,7 @@ $(document).ready(function () {
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             if (aData[7] > 1) {
                 $('td', nRow).css('background-color', '#FFAB91');
-                // $('td', nRow).css('color', 'White');
+               //color the product rows that has more than one sample
             }
             else {
                 // $('td', nRow).css('background-color', 'White');
@@ -261,7 +307,7 @@ $(document).ready(function () {
             var api = this.api();
             var rows = api.rows({page: 'current'}).nodes();
             var last = null;
-
+            //create group of batches inside the table, so the products will be displayed under each batches
             api.column(5, {page: 'current'}).data().each(function (group, i) {
                 if (last !== group) {
                     $(rows).eq(i).before(
@@ -272,7 +318,8 @@ $(document).ready(function () {
                 }
             });
 
-        }
+        },
+        "deferRender": true
     });
 
 
@@ -287,6 +334,8 @@ $(document).ready(function () {
         }
     });
 
+
+    //enable the select all function in the datatable
     $('#example-select-all').on('click', function () {
 
         // Check/uncheck all checkboxes in the table
@@ -295,13 +344,15 @@ $(document).ready(function () {
 
         if (this.checked) {
             $('input[type="checkbox"]', rows).prop('name', 'CKT');
-
+            //set the name of the checkbox input CKT which mean that the
+            //check box has been checked for render purpose
 
         }
         else {
 
             $('input[type="checkbox"]', rows).prop('name', 'CKF');
-
+            //set the name of the checkbox input CKF which mean that the
+            //check box has been not  checked for render purpose
         }
     });
 
@@ -330,7 +381,6 @@ $(document).ready(function () {
     });
 
 
-    // Handle form submission event
 
     // Apply the search
     table.columns().every(function () {
@@ -348,6 +398,9 @@ $(document).ready(function () {
     $.fn.dataTableExt.ofnSearch['html'] = function (sData) {
         return $(sData).val();
     }
+
+    // only displays the row that has the same number of the entered sample
+    //or greater than
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             var min = parseInt($('#SampleN').val(), 10);
@@ -364,11 +417,10 @@ $(document).ready(function () {
 
     var table = $('#example').DataTable();
 
+    //redraw the table after filtering according to the sample number
     $('#SampleN').keyup(function () {
 
-
         table.draw();
-
 
     });
 
@@ -376,8 +428,8 @@ $(document).ready(function () {
 });
 
 function GetMaxSampN(e) {
-  e.preventDefault();
-    //get the highest number of total product
+    e.preventDefault();
+    //get the highest number of total product(sample number)
     var table = $('#example').DataTable();
     var nextSeqNum = table
         .column(7)
@@ -386,21 +438,38 @@ function GetMaxSampN(e) {
         .reverse()[0];
     var col3 = nextSeqNum;
 
+    //get the entered sample number
     var sampNo = $('#SampleN').val();
-    if (nextSeqNum > 1 && ($('#SampleN').val() == '')) {
-        $('#model1').modal('show');
+
+    var mymodal = $('#model1');
+    mymodal.find('.modal-body').text('');
+
+    //if the sample numbers of one of the product greater than 1
+    //and the user did not enter the sample number that he wants
+    //display message that only one sample will be taken for each product
+    if ((nextSeqNum > 1 && ($('#SampleN').val() == ''))) {
+        mymodal.find('.modal-body').text('You did not Select any Product. The products will be selected in order.');
+        mymodal.find('.modal-body').text('You did not enter the number of samples for each product. One measurement will be taken for each product.');
+        mymodal.modal('show');
+    }
+    //if the user did not select product the product will be selected in order
+    else if ((nextSeqNum > 1 && ($('#Noselectcb').val() == 1))) {
+        mymodal.find('.modal-body').text('You did not Select any Product. The products will be selected in order.');
+        mymodal.modal('show');
     }
 
+
+    //if the user select products that he wants to process, do the following
     var countCk = 0; // count the selected row
     var numrow = table.rows({filter: 'applied'}).nodes().length; //get the number of row in the table
     var data = table.rows({filter: 'applied'}).data(); //get the data after applying any filter
 
-
+   //create array that should hold the selected data
     var arr = new Array(numrow);
     for (i = 0; i < numrow; i++)
-        arr[i] = new Array(7)
+        arr[i] = new Array(8)
 
-
+    //retrive the data from the datatable
     var i = 0;
     data.each(function (value, index) {
         arr[i][0] = index;  //rowNum
@@ -409,12 +478,13 @@ function GetMaxSampN(e) {
         arr[i][3] = data[index][10]; //batchID
         arr[i][4] = data[index][9]; //productId
         arr[i][5] = data[index][5]; //BatchName
+        arr[i][7] = data[index][8]; //BatchProductID
         i++;
 
     });
     var seleIndex = [];
     var j = 0;
-//get the selected data from table
+    //get the selected data from table
     var data = table.rows({filter: 'applied'}).nodes();
     $.each(data, function (index, value) {
 
@@ -435,55 +505,75 @@ function GetMaxSampN(e) {
 
         }
 
+    //get the selected products inside each batch and make sure it
+    //equals the same number of entered sample, otherwise
+    //display error
+    var selectedP = [];
+    if ((nextSeqNum > 1 && ($('#Noselectcb').val() == 0))) {
+        if (countCk > 0) {
+            for (i = 0; i < numrow; i++) {
+                var np = 0;
+                for (j = 0; j < numrow; j++) {
+                    if (arr[i][3] == arr[j][3] && arr[i][1] == arr[j][1]) {
 
-
-  if(countCk > 0) {
-    for (i = 0; i < numrow; i++) {
-        var np = 0;
-            for (j = 0; j < numrow; j++) {
-                if (arr[i][3] == arr[j][3] && arr[i][1] == arr[j][1] ) {
-
-                    //alert('inside j loop before select ' + arr[j][0] + arr[i][5] + arr[i][1]);
-                    if(arr[j][6] == 'Selected') {
-                        np++;
-                        //alert('inside j loop selected '  + arr[j][0]  + arr[i][5] + arr[i][1]);
+                        //alert('inside j loop before select ' + arr[j][0] + arr[i][5] + arr[i][1]);
+                        if (arr[j][6] == 'Selected') {
+                            np++;
+                            selectedP.push(arr[j][7]);
+                            //   alert('inside j loop selected '  + arr[j][0]  + arr[i][5] + arr[i][1] +arr[j][6] + arr[j][7]);
+                        }
                     }
                 }
-            }
 
-            //alert ('outside j loop ' + arr[i][5] + arr[i][1] + np ) ;
-            if (sampNo != np) {
+                //alert ('outside j loop ' + arr[i][5] + arr[i][1] + np ) ;
+                if (sampNo != np) {
                     //alert('modalError') ;
-                    var mymodal = $('#modalError');
-                    mymodal.find('.modal-body').text('') ;
-                    mymodal.find('.modal-body').text('You selected wrong number of product for Batch : ' + arr[i][5] + ', Product: ' + arr[i][1] );
-                    mymodal.modal('show');
-                    break ;
+                    var mymodalEr = $('#modalError');
+                    mymodalEr.find('.modal-body').text('');
+                    mymodalEr.find('.modal-body').text('You selected wrong number of product for Batch : ' + arr[i][5] + ', Product: ' + arr[i][1]);
+                    mymodalEr.modal('show');
+                    break;
+
+                }
 
             }
-
-        }
         }
 
-
-    if ($('#SampleN').val() && countCk == 0) {
-        $('#model2').modal('show');
+        var outputArray = [];
+        //get the selected proudct if the number is correct and add input field to send them
+        //when the form is submitted
+        for (var i = 0; i < selectedP.length; i++) {
+            if ((jQuery.inArray(selectedP[i], outputArray)) == -1) {
+                outputArray.push(selectedP[i]);
+                $('#ProductDetailT').append('<input type="hidden" name="SelectedBatchProduct" value="' + selectedP[i] + '">');
+            }
+        }
     }
+    if ($('#SampleN').val() && countCk == 0) {
+        mymodal.find('.modal-body').text('You did not Select any Product. The products will be selected in order.');
+        mymodal.modal('show');
+    }
+
+    $('#ProductDetailT').append('<input type="hidden" name="SubmitGroupProductDetail" value="SubmitGroupProductDetail" />');
+    $('#ProductDetailT').submit();
 
 }
 
 $('#SubmitGroupProductDetail').click(function () {
     /* when the submit button in the modal is clicked, submit the form */
+    //add input field to know which form to process
+    $('#ProductDetailT').append('<input type="hidden" name="SubmitGroupProductDetail" value="SubmitGroupProductDetail" />');
     $('#ProductDetailT').submit();
 });
 
 var id = 0, is = 0, idt = 0;
 var original = document.getElementById('duplicater');
 
-
+//add new controls for influencing factors filter
+//when the plus button is pressed
 function duplicate(t, e, event) {
     event.preventDefault();
-
+  //add decimal controls
     if (t == "after-add-more-DF") {
         var operation = document.getElementById('AndOrFDF');
         var cloneOp = operation.cloneNode(true);
@@ -492,11 +582,12 @@ function duplicate(t, e, event) {
         clone.id = "duplicaterD" + ++id;
         cloneOp.id = "s" + clone.id;
         cloneOp.hidden = false;
-        $(clone).find("input:text").val("");
+        $(clone).find("input:text").val(""); //set the value of the newly created element to empty
         // or clone.id = ""; if the divs don't need an ID
         $(clone).insertAfter("#" + $(e).closest('.after-add-more-DF').attr("id"));
         $(cloneOp).insertBefore("#" + $(clone).attr('id'));
     }
+    //add string controls
     if (t == "after-add-more-S") {
         var operation = document.getElementById('AndOrFS');
         var cloneOp = operation.cloneNode(true);
@@ -511,13 +602,14 @@ function duplicate(t, e, event) {
         $(clone).find("select").attr("id", countinfS);
         $(cloneOp).insertBefore("#" + $(clone).attr('id'));
 
-          var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
-    for (var i = 0; i < sub.length; i++) {
+        var sub = document.getElementsByClassName("InfluencingFactorV")[countinfS];
+        for (var i = 0; i < sub.length; i++) {
             sub.options[i].hidden = true;
-    }
+        }
 
 
     }
+    //add date controls
     if (t == "after-add-more-DT") {
         var operation = document.getElementById('AndOrFDa');
         var cloneOp = operation.cloneNode(true);
@@ -559,6 +651,9 @@ $(function () {
 
 });
 
+
+//if the user select string influencing factor, display the value that are
+//related to this selection
 function OnChangeIS(e, event) {
     var val = $(e).val();
     var idn = $(e).attr("id");
@@ -572,7 +667,7 @@ function OnChangeIS(e, event) {
 
 }
 
-
+//when adding extra date field in the batch page clear the text of newely added field
 function ClearRelatedTextBox(e, d) {
     if (d == "Date1") {
         $(e).parent().find('input.Date1').attr('value', '');
@@ -580,11 +675,9 @@ function ClearRelatedTextBox(e, d) {
     }
     else
         $(e).parent().find('input.Date2').attr('value', '');
-
-    //document.getElementById('dtp_input1').value = "";
 }
 
-
+//set the current active menu element to the current page
 function setNavigation() {
     var links = $('.navbar ul li a');
     $.each(links, function (key, va) {
