@@ -16,9 +16,12 @@ import datetime
 from django.views.generic import TemplateView
 from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
-
-# Create random data with numpy
+import plotly.offline as opy
+import plotly.graph_objs as go
 import numpy as np
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
+from scipy.stats import norm
 
 
 def home(request):
@@ -816,9 +819,7 @@ def visualization(request):
     return render(request, 'visualization.html', {'group': group})
 
 
-import plotly.offline as opy
-import plotly.graph_objs as go
-import plotly.figure_factory as ff
+
 
 
 class Graph(TemplateView):
@@ -908,6 +909,7 @@ class Graph(TemplateView):
         x = dateV
         y = value
 
+
         size = len(x)
         yaverage = []
         for i in x:
@@ -923,19 +925,43 @@ class Graph(TemplateView):
 
         # Create Overal Distribution graph
 
+
         data = [go.Histogram(x=y, histnorm='probability')]
-        # hist_data= [[y]]
-        # group_labels = ['distplot']
-        # Plot!
-        # fig = ff.create_distplot(data,histnorm='probability density', curve_type='normal')
-        # fig = ff.create_distplot(hist_data, group_labels)
+
 
         divOv = opy.plot(data, filename='normalized histogram', auto_open=False, output_type='div')
+
 
         context['graph'] = div
 
         context['group'] = Group.objects.all()
 
         context['graphOv'] = divOv
+
+
+        import plotly.plotly as py  # tools to communicate with Plotly's server
+
+        fig = plt.figure()
+
+        # example data
+        mu = float(np.mean(y))  # mean of distribution
+        sigma = float(np.std(y, ddof=1))   # standard deviation of distribution
+        a = np.array(y, dtype=float)
+
+
+        # the histogram of the data
+        n, bins, patches = plt.hist(a,len(a), normed=1, facecolor='blue',alpha=0.75)
+        # add a 'best fit' line
+        y = mlab.normpdf(bins, mu,sigma)
+        plt.plot(bins, y, 'r--')
+        plt.xlabel('Value')
+        plt.ylabel('Probability')
+
+        # Tweak spacing to prevent clipping of ylabel
+        plt.subplots_adjust(left=0.15)
+
+        plot_url = opy.plot_mpl(fig, filename='Normal Distribution', auto_open=False, output_type='div')
+
+        context['graphCurve'] = plot_url
 
         return context
